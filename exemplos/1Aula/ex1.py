@@ -53,10 +53,29 @@ for contador in range(0,6): # Range(comeco, final, salto)
 c = 1
 while c < 10:
         print(c)
-        c = c + 1
-"""
+        c += 1
+
 # TUPLAS 
 
-frase = ('casa','suco','de','uva')
+frase = ('casa','suco','de','uva') #Cara string é um elemento
 
-print(frase[1])
+# Listas
+
+valores = [1,2,3,4,5,3,1]   
+
+valores.insert(2, 0)    # inset(posicao, valor)
+
+pessoas = list()        # cria uma lista em branco
+pessoas = [['pedro',23], ['jamili', 30], ['jau',47]] # Listas dentro de listas
+
+print(pessoas[0][0]) # vai printar pedro // por ser [estrutura][posição dentro da estrutura]
+
+
+# FUNCAO
+
+def nomeDaFuncao(n): # n é o parametro
+    print(n)
+nomeDaFuncao(4)
+
+"""
+
