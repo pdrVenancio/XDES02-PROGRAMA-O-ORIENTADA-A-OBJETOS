@@ -70,6 +70,14 @@ pessoas = [['pedro',23], ['jamili', 30], ['jau',47]] # Listas dentro de listas
 
 print(pessoas[0][0]) # vai printar pedro // por ser [estrutura][posição dentro da estrutura]
 
+# DICIONARIOS
+
+dados = dict()
+dados = {'nome':'Pedro','idade':'20'} # Ao invesde 'pedro' ocupar a posição 0, vai ocupar a posição 'nome' // troca o indice
+
+print(dados.values()) # Vao mostrar Pedro 20
+print(dados.keys())   # Vai mostrar nome idade
+print(dados.itens())  # Mostra os dois
 
 # FUNCAO
 
@@ -77,5 +85,13 @@ def nomeDaFuncao(n): # n é o parametro
     print(n)
 nomeDaFuncao(4)
 
+def nomeDafuncao(*n) # *n para quando vc nao sabe a quantidade de parametros q vai passar
+
+# MODULARIZAR 
+
+import NomeDoarquivo    # Assim consigo importar funcoes de outros arquivos
+
+from uteis import datas # Pasta "uteis" arqivo "datas" // Pacotes == Pastas
 """
+
 
