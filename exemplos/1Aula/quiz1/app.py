@@ -11,8 +11,7 @@ while c < 10:
     dado = dados[c]
     questao = dado['per']
     resposta = dado['res']
-    ide = dado['id']
-
+   
     res1 = input(questao + " ")
 
     if res1 == resposta:
