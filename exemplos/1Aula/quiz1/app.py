@@ -1,7 +1,7 @@
 from bd import dados
 
 print("-"*65)
-print(" AS RSPOSTAS DEVEM INICIAR EM LETRA MAIUSCULA E CONTER ACENTOS")
+print("             DIGITE APENAS A ALTERNATIVA CORRETA")
 print("-"*65)
 
 c = 0
@@ -14,9 +14,11 @@ while c < 10:
    
     res1 = input(questao + " ")
 
+    res1.lower()
+
     if res1 == resposta:
         i += 1
     
     c += 1
 
-print("Número de respostas corretas:", i)  
+print(f'Você acertou {i}/{c}')  

@@ -1,3 +1,4 @@
+# Cada numero representa uma posição no dicionarios assim podemos trabalhar com cada uma individualmente
 dados = {
     0: {
         'per': 'Qual a capital do Brasil?\n'
