@@ -77,7 +77,7 @@ if __name__ == '__main__':
     
     empregadas = [e1, e2, e3]
     for emp in empregadas:
-        print(f'Nome: {emp.nome} \nSalário: {emp.getSalario()}')
+        print(f'Nome: {emp.nome} \nSalário: {emp.getSalario()}\n')
 
     marba = e1.getSalario()
 
