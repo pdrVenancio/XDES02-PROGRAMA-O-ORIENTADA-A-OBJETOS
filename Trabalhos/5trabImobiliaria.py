@@ -1,3 +1,5 @@
+#NOME: Pedro Venancio dos Santos MATRICULA:2023010066
+
 class Venda:
     def __init__(self, codigo_imovel, mes, ano, valor):
         self.codigo_imovel = codigo_imovel

@@ -1,6 +1,4 @@
-#professor titulo  = doutor idade >=30 
-#aluno CCO SIN idade =>18
-
+#NOME: Pedro Venancio dos Santos MATRICULA:2023010066
 
 class Pessoa:
     def __init__(self, nome, endereco, idade, cpf) -> None:
