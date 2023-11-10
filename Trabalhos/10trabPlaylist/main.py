@@ -17,8 +17,8 @@ class Vew():
         self.menubar.add_cascade(label="Artista", menu=self.artistaMenu)
 
         self.albumMenu = Menu(self.menubar)
-        self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbums)
-        self.albumMenu.add_command(label="Mostra", command=self.controle.mostraAlbums)
+        self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbuns)
+        self.albumMenu.add_command(label="Mostra", command=self.controle.mostraAlbuns)
         self.menubar.add_cascade(label="Album", menu=self.albumMenu)
 
         self.playlistMenu = Menu(self.menubar)
@@ -28,7 +28,7 @@ class Vew():
 
         self.root.confg(menu=self.menubar)
 
-class Controle:
+class ControlePrincipal:
     def __init__(self) -> None:
         
         self.root = Tk()
@@ -41,6 +41,29 @@ class Controle:
 
         self.root.title("Musicas")
         self.root.mainloop()
+
+
+    def inserirArtistas(self):
+        self.ctrArtista.inserirArtistas()
+
+    def mostraArtistas(self):
+        self.ctrArtista.mostraArtistas()
+
+    def inserirAlbuns(self):
+        self.ctrArtista.inserirAlbuns()
+        
+    def mostraAlbuns(self):
+        self.ctrArtista.mostraAlbuns()
+
+    def inserirPlaylist(self):
+        self.ctrArtista.inserirPlaylist()
+        
+    def mostraPlaylist(self):
+        self.ctrArtista.mostraPlaylist()
+
+if __name__ == '__main__':
+    c = ControlePrincipal()
+
     
         
 
