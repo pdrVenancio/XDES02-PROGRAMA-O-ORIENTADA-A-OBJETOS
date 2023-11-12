@@ -1,10 +1,7 @@
 from tkinter import *
 from tkinter import simpledialog
 
-import artista
-import playlist
-import album
-
+import artista, playlist, album
 
 class Vew():
     def __init__(self, root, controle) -> None:
@@ -35,12 +32,12 @@ class Vew():
         self.root.config(menu=self.menubar)
 
 class ControlePrincipal():
-    def __init__(self) -> None:
+    def __init__(self):
         self.root = Tk()
 
-        self.ctrAlbum = album.CtrlAlbum()
-        self.ctrArtista = artista.CtrlArtista()
-        self.ctrPlaylist = playlist.CtrlPlaylist()
+        self.ctrlAlbum = album.CtrlAlbum(self)
+        self.ctrlArtista = artista.CtrlArtista(self)
+        self.ctrlPlaylist = playlist.CtrlPlaylist()
 
         self.vew = Vew(self.root, self)
 
@@ -49,25 +46,25 @@ class ControlePrincipal():
         self.root.mainloop()
 
     def inserirArtistas(self):
-        self.ctrArtista.inserirArtistas()
+        self.ctrlArtista.inserirArtistas()
 
     def consultarArtistas(self):
-        self.ctrArtista.consultarArtistas()
+        self.ctrlArtista.consultarArtistas()
 
     def inserirAlbuns(self):
-        self.ctrAlbum.inserirAlbuns()
+        self.ctrlAlbum.inserirAlbuns()
 
     def consultaAlbum(self):
-        self.ctrAlbum.consultaAlbum()
+        self.ctrlAlbum.consultaAlbum()
 
     def mostrarAlbum(self):
-        self.ctrAlbum.mostrarAlbum()
+        self.ctrlAlbum.mostrarAlbum()
 
     def inserirPlaylists(self):
-        self.ctrPlaylist.inserirPlaylists()
+        self.ctrlPlaylist.inserirPlaylists()
 
     def mostraPlaylists(self):
-        self.ctrPlaylist.mostraPlaylists()
+        self.ctrlPlaylist.mostraPlaylists()
 
 if __name__ == '__main__':
     c = ControlePrincipal()

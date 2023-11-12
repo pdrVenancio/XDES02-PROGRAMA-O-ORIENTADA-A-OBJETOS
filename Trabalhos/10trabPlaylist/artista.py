@@ -1,11 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
-from tkinter import simpledialog
 
-from main import *
-from album import *
-from playlist import *
-from musica import *
+from album import Album
+from musica import Musica
 
 class Artista:
     def __init__(self, nome):
@@ -103,10 +100,15 @@ class VewMostraArtista():
         messagebox.showinfo('Lista de artistas', str)
 
 class CtrlArtista():
-    def __init__(self) -> None:
+    def __init__(self, controlePrincipal):
         self.listaArtistas = []
+        self.ctrlPrincipal = controlePrincipal
+
+    def getListaArtista(self):# para q a lista de artista possa ser acessada por outros arquivos
+        return self.listaArtistas
 
     def consultarArtistas(self):
+        self.listaAlbuns = self.ctrlPrincipal.ctrlAlbum.getListaAlbum()
         self.vewConsulta = VewConsultaArtista(self)      
     
     def inserirArtistas(self):
@@ -123,10 +125,14 @@ class CtrlArtista():
 
         for art in self.listaArtistas:
             if art.nome == artista:
-                messagebox.showinfo('Lista de albuns', f'O artista {artista} possue os seguintes albuns:\n')
-                # lista de albuns
+                str = f'O artista {artista} possue os seguintes albuns:\n'
+                for alb in self.listaAlbuns:
+                    if alb.artista == artista:
+                        str += f"\n{alb.titulo}"
             else:
-                messagebox.showinfo('Erro', f'Artista {artista} nao existe na lista!')
+                str =  f'Artista {artista} nao existe na lista!'
+            
+            messagebox.showinfo('Cunsulta', str)
 
     def enterHandler(self, event):
         nome = self.limiteIns.inputNome.get()

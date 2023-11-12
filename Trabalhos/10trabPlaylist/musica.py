@@ -22,3 +22,6 @@ class Musica:
     @property
     def nroFaixa(self):
         return self.__nroFaixa
+    
+
+        

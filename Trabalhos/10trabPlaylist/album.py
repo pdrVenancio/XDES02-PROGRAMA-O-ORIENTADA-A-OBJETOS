@@ -1,6 +1,5 @@
-from artista import *
-from playlist import *
-from musica import *
+from musica import Musica
+
 from tkinter import *
 from tkinter import messagebox
 
@@ -11,7 +10,6 @@ class Album:
         self.__ano = ano
 
         self.__faixas = []
-        artista.addAlbum(self)
 
     @property
     def titulo(self):
@@ -57,6 +55,7 @@ class VewInsereAlbum(Toplevel):
 
         self.labelTitulo = Label(self.frameTitulo, text="Titulo: ")
         self.labelTitulo.pack(side="left")
+        
         self.labelArtista = Label(self.frameArtista, text="Artista: ")
         self.labelArtista.pack(side="left")
         self.labelAno = Label(self.frameAno, text="Ano: ")
@@ -90,20 +89,55 @@ class VewInsereAlbum(Toplevel):
         messagebox.showinfo(titulo, msg)    
 
 class VewConsultaAlbum(Toplevel):
-    ...
+    def __init__(self, controle):
+        Toplevel.__init__(self)
+        self.geometry('250x100')
+        self.title("Artista")
+        self.controle = controle
+
+        self.frameBusca = Frame(self)
+        self.frameButton = Frame(self)
+        self.frameBusca.pack()
+        self.frameButton.pack()
+
+        self.labelBusca = Label(self.frameBusca, text="Buscar Album: ")
+        self.labelBusca.pack(side="left")
+
+        self.inputBusca = Entry(self.frameBusca, width=20)
+        self.inputBusca.pack(side="left")
+
+        self.buttonSubmit = Button(self.frameButton, text="Buscar")
+        self.buttonSubmit.pack(side="left")
+        self.buttonSubmit.bind("<Button>", controle.buscaHandler)
+
+        self.buttonClear = Button(self.frameButton, text="Clear")
+        self.buttonClear.pack(side="left")
+        self.buttonClear.bind("<Button>", controle.clearHandler)
+
+        self.buttonFecha = Button(self.frameButton, text="Concluído")
+        self.buttonFecha.pack(side="left")
+        self.buttonFecha.bind("<Button>", controle.fechaHandler)
+
+    def mostraJanela(self, titulo, msg):
+        messagebox.showinfo(titulo, msg)
     
 class VewMostraAlbum():
     def __init__(self, str):
         messagebox.showinfo('Lista de álbuns', str)
 
 class CtrlAlbum():
-    def __init__(self) -> None:
+    def __init__(self, controlePrincipal):
+        self.ctrlPrincipal = controlePrincipal
         self.listaAlbuns = []
-    
+
+    def getListaAlbum(self):
+        return self.listaAlbuns
+
     def consultaAlbum(self):
-       ...
+       self.vewConsultar = VewConsultaAlbum(self)
 
     def inserirAlbuns(self):
+        self.nomeArts = self.ctrlPrincipal.ctrlArtista.getListaArtista()
         self.limiteIns = VewInsereAlbum(self)
     
     def mostrarAlbum(self):
@@ -116,38 +150,64 @@ class CtrlAlbum():
 
         self.vewLista = VewMostraAlbum(str)
     
+    def buscaHandler(self,event):
+        str = "Lsita de musicas:\n"
+        titulo = self.vewConsultar.inputBusca.get()
+        for alb in self.listaAlbuns:
+            if alb.titulo == titulo:
+                for faixa in alb.faixas:
+                    str += f"\n  {faixa.titulo}"
+    
+        self.vewLista = VewMostraAlbum(str)
+    
     def enterHandler(self, event):
-        cont = 1
-        titulo = self.limiteIns.inputTitulo.get()
-        for album in self.listaAlbuns:
-            if titulo == album.titulo:
+        #verifica se o artista foi registrado
+
+        artista = self.limiteIns.inputArtista.get()
+        for art in self.nomeArts:
+            print(art.nome)
+            if art.nome == artista:
                 cont = 0
-        
-        if cont == 1:
+            else: 
+                cont = 1
+
+        if cont == 0:
+            cont = 1
             titulo = self.limiteIns.inputTitulo.get()
-            artista = self.limiteIns.inputArtista.get()
-            ano = self.limiteIns.inputAno.get()
-            album = Album(titulo, artista, ano)
-            self.listaAlbuns.append(album)
+            for album in self.listaAlbuns:
+                if titulo == album.titulo:
+                    cont = 0
 
-            musica = self.limiteIns.inputMusica.get()
-            if musica:
-                album.addFaixa(musica, artista)
-        
-        elif cont == 0:
-            musica = self.limiteIns.inputMusica.get()
-            artista = self.limiteIns.inputArtista.get()
-            if musica:
-                album.addFaixa(musica, artista)
+            # caso seja a criação de um novo album
+            if cont == 1:
+                titulo = self.limiteIns.inputTitulo.get()
+                artista = self.limiteIns.inputArtista.get()
+                ano = self.limiteIns.inputAno.get()
+                album = Album(titulo, artista, ano)
+                self.listaAlbuns.append(album)
 
+                musica = self.limiteIns.inputMusica.get()
+                if musica:
+                    album.addFaixa(musica, artista)
 
-        self.limiteIns.mostraJanela('Sucesso', 'Álbum cadastrado com sucesso!')
+            # caso for a inserção de uma musica em um album ja existente
+            elif cont == 0:
+                musica = self.limiteIns.inputMusica.get()
+                artista = self.limiteIns.inputArtista.get()
+                if musica:
+                    album.addFaixa(musica, artista)
+
+            str = "Album registrado com sucesso"
+        else:
+            str = "Artista não registrado!"
+        self.limiteIns.mostraJanela('Inserção', str)
         self.clearHandler(event)
 
     def clearHandler(self, event):
         self.limiteIns.inputTitulo.delete(0, len(self.limiteIns.inputTitulo.get()))
         self.limiteIns.inputArtista.delete(0, len(self.limiteIns.inputArtista.get()))
         self.limiteIns.inputAno.delete(0, len(self.limiteIns.inputAno.get()))
+        self.limiteIns.inputMusica.delete(0, len(self.limiteIns.inputMusica.get()))
     
     def fechaHandler(self, event):
         self.limiteIns.destroy()

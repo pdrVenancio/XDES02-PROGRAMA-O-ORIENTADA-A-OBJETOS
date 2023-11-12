@@ -100,36 +100,47 @@ class Playlist:
 
 if __name__ == "__main__":
     listaAlbuns = []
-    art1 = Artista('Coldplay')
-    print(art1.nome)
-  
-if __name__ == "__main__":
-  listaAlbuns = []
-  art1 = Artista('coldplay')
-  album1 = Album('album1', art1, 2011)
-  album1.addFaixa('m1')
-  album1.addFaixa('m2')
+    art1 = Artista('coldplay')
+    album1 = Album('album1', art1, 2011)
+    album1.addFaixa('m1')
+    album1.addFaixa('m2')
 
-  listaAlbuns.append(album1)
+    listaAlbuns.append(album1)
 
-  album2 = Album('album2', art1, 2011)
-  album2.addFaixa('m1')
-  album2.addFaixa('m2')
+    album2 = Album('album2', art1, 2011)
+    album2.addFaixa('m1')
+    album2.addFaixa('m2')
 
-  listaAlbuns.append(album2)
+    listaAlbuns.append(album2)
 
 
-  for m in art1.musicas:
-    print(m.titulo)
-  
-# 1) criar eexibir uma playlist com as musicas do album 1
-  pl1 = Playlist('pl1')
-  for musica in album1.faixas:
-    pl1.addMusica(musica)
-  print(f'Playlist {pl1.nome}')
-  for musica in pl1.musicas:
-    print(musica.titulo)
-  print()
-# 2) criar e exibir uma playlist com todas as musicas
+    for m in art1.musicas:
+        print(m.titulo)
+
+    # 1) criar eexibir uma playlist com as musicas do album 1
+    pl1 = Playlist('pl1')
+    for musica in album1.faixas:
+        pl1.addMusica(musica)
+    print(f'Playlist {pl1.nome}')
+    for musica in pl1.musicas:
+        print(musica.titulo)
+    print()
+    # 2) criar e exibir uma playlist com todas as musicas
+    pl2 = Playlist('pl2')
+    for album in listaAlbuns:
+        for musica in album.faixas:
+            pl2.addMusica(musica)
+
+    print(f'Playlist {pl2.nome}')
+    for musica in pl2.musicas:
+        print(musica.titulo)
+    print()
 
 # 3) criar e exibir uma playlist contendo uma musica de cada album
+    pl3 = Playlist('pl3')
+    for album in listaAlbuns:
+        pl3.addMusica(album.faixas[0])  # Adding the first track of each album
+
+    print(f'Playlist {pl3.nome}')
+    for musica in pl3.musicas:
+        print(musica.titulo)

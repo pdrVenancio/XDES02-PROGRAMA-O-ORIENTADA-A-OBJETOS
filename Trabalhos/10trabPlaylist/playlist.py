@@ -1,6 +1,4 @@
-from artista import *
-from album import *
-from musica import *
+from musica import Musica
 from tkinter import *
 from tkinter import messagebox
 
@@ -22,7 +20,7 @@ class Playlist:
         self.__musicas.append(musica)
 
 
-class LimiteInsereTurma(Toplevel):
+class LimiteInserePlaylist(Toplevel):
     def __init__(self, controle, listaMusicas):
         Toplevel.__init__(self)
         self.geometry('300x250')
