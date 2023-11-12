@@ -1,7 +1,5 @@
 from tkinter import *
-from artista import *
-from album import *
-from playlist import *
+from tkinter import simpledialog
 
 import artista
 import playlist
@@ -13,7 +11,7 @@ class Vew():
         self.controle = controle
         self.root = root
 
-        self.root.geometry('500x500')
+        self.root.geometry('700x700')
 
         self.menubar = Menu(self.root)
 
@@ -24,8 +22,10 @@ class Vew():
 
         self.albumMenu = Menu(self.menubar)
         self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbuns)
-        self.albumMenu.add_command(label="Consulta", command=self.controle.consultarAlbuns)
+        self.albumMenu.add_command(label="Mostar", command=self.controle.mostrarAlbum)
+        self.albumMenu.add_command(label="Consulta", command=self.controle.consultaAlbum)
         self.menubar.add_cascade(label="Album", menu=self.albumMenu)
+        
 
         self.playlistMenu = Menu(self.menubar)
         self.playlistMenu.add_command(label="Adicionar", command=self.controle.inserirPlaylists)
@@ -34,7 +34,7 @@ class Vew():
 
         self.root.config(menu=self.menubar)
 
-class ControlePrincipal:
+class ControlePrincipal():
     def __init__(self) -> None:
         self.root = Tk()
 
@@ -57,8 +57,11 @@ class ControlePrincipal:
     def inserirAlbuns(self):
         self.ctrAlbum.inserirAlbuns()
 
-    def consultarAlbuns(self):
-        self.ctrAlbum.consultarAlbuns()
+    def consultaAlbum(self):
+        self.ctrAlbum.consultaAlbum()
+
+    def mostrarAlbum(self):
+        self.ctrAlbum.mostrarAlbum()
 
     def inserirPlaylists(self):
         self.ctrPlaylist.inserirPlaylists()

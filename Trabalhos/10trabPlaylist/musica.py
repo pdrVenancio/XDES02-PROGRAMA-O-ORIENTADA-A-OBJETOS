@@ -5,7 +5,7 @@ class Musica:
         self.__album = album
         self.__nroFaixa = nroFaixa
 
-        artista.addMusica(self)
+        #artista.addMusica(self)
 
     @property
     def titulo(self):

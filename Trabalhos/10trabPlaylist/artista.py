@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import simpledialog
 
+from main import *
 from album import *
 from playlist import *
 from musica import *
@@ -63,7 +64,40 @@ class VewInsereArtista(Toplevel):
 
     def mostraJanela(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
-        
+
+class VewConsultaArtista(Toplevel):
+    def __init__(self, controle):
+        Toplevel.__init__(self)
+        self.geometry('250x100')
+        self.title("Artista")
+        self.controle = controle
+
+        self.frameBusca = Frame(self)
+        self.frameButton = Frame(self)
+        self.frameBusca.pack()
+        self.frameButton.pack()
+
+        self.labelBusca = Label(self.frameBusca, text="Buscar Artista: ")
+        self.labelBusca.pack(side="left")
+
+        self.inputBusca = Entry(self.frameBusca, width=20)
+        self.inputBusca.pack(side="left")
+
+        self.buttonSubmit = Button(self.frameButton, text="Buscar")
+        self.buttonSubmit.pack(side="left")
+        self.buttonSubmit.bind("<Button>", controle.buscaHandler)
+
+        self.buttonClear = Button(self.frameButton, text="Clear")
+        self.buttonClear.pack(side="left")
+        self.buttonClear.bind("<Button>", controle.clearHandler)
+
+        self.buttonFecha = Button(self.frameButton, text="Concluído")
+        self.buttonFecha.pack(side="left")
+        self.buttonFecha.bind("<Button>", controle.fechaHandler)
+
+    def mostraJanela(self, titulo, msg):
+        messagebox.showinfo(titulo, msg)
+               
 class VewMostraArtista():
     def __init__(self, str):
         messagebox.showinfo('Lista de artistas', str)
@@ -73,17 +107,7 @@ class CtrlArtista():
         self.listaArtistas = []
 
     def consultarArtistas(self):
-        answer = simpledialog.askstring("Consultar albuns", "Qual o Artista??",
-                                            parent=self.root.janela)
-    
-        for artista in self.listaArtistas:
-            if answer == str(artista.nome):
-                msg = f"artistas de nome {answer}:\n"
-                msg += artista.albuns + "\n"
-                self.view.mostraJanela("artistas ENCONTRADO!!!!!!!!", msg)
-        else:
-            self.view.mostraJanela("",f"artistas nao cadastrado! {answer}")
-        
+        self.vewConsulta = VewConsultaArtista(self)      
     
     def inserirArtistas(self):
         self.limiteIns = VewInsereArtista(self)
@@ -94,6 +118,16 @@ class CtrlArtista():
             str += art.nome + "\n"
         self.vewLista = VewMostraArtista(str)
     
+    def buscaHandler(self, event):
+        artista = self.vewConsulta.inputBusca.get()
+
+        for art in self.listaArtistas:
+            if art.nome == artista:
+                messagebox.showinfo('Lista de albuns', f'O artista {artista} possue os seguintes albuns:\n')
+                # lista de albuns
+            else:
+                messagebox.showinfo('Erro', f'Artista {artista} nao existe na lista!')
+
     def enterHandler(self, event):
         nome = self.limiteIns.inputNome.get()
         artista = Artista(nome)

@@ -11,7 +11,7 @@ class Album:
         self.__ano = ano
 
         self.__faixas = []
-        #artista.addAlbum(self)
+        artista.addAlbum(self)
 
     @property
     def titulo(self):
@@ -39,18 +39,21 @@ class Album:
 class VewInsereAlbum(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
-        self.geometry('250x100')
+        self.geometry('250x200')
         self.title("Album")
         self.controle = controle
 
         self.frameTitulo = Frame(self)
         self.frameArtista = Frame(self)
         self.frameAno = Frame(self)
+        self.frameMusica= Frame(self)
         self.frameButton = Frame(self)
         self.frameTitulo.pack()
         self.frameArtista.pack()
         self.frameAno.pack()
+        self.frameMusica.pack()
         self.frameButton.pack()
+        
 
         self.labelTitulo = Label(self.frameTitulo, text="Titulo: ")
         self.labelTitulo.pack(side="left")
@@ -58,6 +61,8 @@ class VewInsereAlbum(Toplevel):
         self.labelArtista.pack(side="left")
         self.labelAno = Label(self.frameAno, text="Ano: ")
         self.labelAno.pack(side="left")
+        self.labelMusica = Label(self.frameMusica, text="Musica: ")
+        self.labelMusica.pack(side="left")
 
         self.inputTitulo = Entry(self.frameTitulo, width=20)
         self.inputTitulo.pack(side="left")
@@ -65,6 +70,9 @@ class VewInsereAlbum(Toplevel):
         self.inputArtista.pack(side="left")
         self.inputAno = Entry(self.frameAno, width=20)
         self.inputAno.pack(side="left")
+        self.inputMusica = Entry(self.frameMusica, width=20)
+        self.inputMusica.pack(side="left")
+
 
         self.buttonSubmit = Button(self.frameButton, text="Enter")
         self.buttonSubmit.pack(side="left")
@@ -79,8 +87,11 @@ class VewInsereAlbum(Toplevel):
         self.buttonFecha.bind("<Button>", controle.fechaHandler)
 
     def mostraJanela(self, titulo, msg):
-        messagebox.showinfo(titulo, msg)
-        
+        messagebox.showinfo(titulo, msg)    
+
+class VewConsultaAlbum(Toplevel):
+    ...
+    
 class VewMostraAlbum():
     def __init__(self, str):
         messagebox.showinfo('Lista de álbuns', str)
@@ -89,24 +100,47 @@ class CtrlAlbum():
     def __init__(self) -> None:
         self.listaAlbuns = []
     
-    def getAlbum(self):
-        ...
+    def consultaAlbum(self):
+       ...
 
     def inserirAlbuns(self):
         self.limiteIns = VewInsereAlbum(self)
     
-    def mostraAlbuns(self):
-        str = "Nome do álbum:\n"
+    def mostrarAlbum(self):
+        str = "Lsita de albuns:\n"
         for alb in self.listaAlbuns:
-            str += alb.titulo + "\n"
+            str += f"Titulo: {alb.titulo} \nArtista: {alb.artista}\nAno: {alb.ano}\nFaixas:"
+            for faixa in alb.faixas:
+                str += f"\n  {faixa.titulo}"
+            str += "\n\n"
+
         self.vewLista = VewMostraAlbum(str)
     
     def enterHandler(self, event):
+        cont = 1
         titulo = self.limiteIns.inputTitulo.get()
-        artista = self.limiteIns.inputArtista.get()
-        ano = self.limiteIns.inputAno.get()
-        album = Album(titulo, artista, ano)
-        self.listaAlbuns.append(album)
+        for album in self.listaAlbuns:
+            if titulo == album.titulo:
+                cont = 0
+        
+        if cont == 1:
+            titulo = self.limiteIns.inputTitulo.get()
+            artista = self.limiteIns.inputArtista.get()
+            ano = self.limiteIns.inputAno.get()
+            album = Album(titulo, artista, ano)
+            self.listaAlbuns.append(album)
+
+            musica = self.limiteIns.inputMusica.get()
+            if musica:
+                album.addFaixa(musica, artista)
+        
+        elif cont == 0:
+            musica = self.limiteIns.inputMusica.get()
+            artista = self.limiteIns.inputArtista.get()
+            if musica:
+                album.addFaixa(musica, artista)
+
+
         self.limiteIns.mostraJanela('Sucesso', 'Álbum cadastrado com sucesso!')
         self.clearHandler(event)
 

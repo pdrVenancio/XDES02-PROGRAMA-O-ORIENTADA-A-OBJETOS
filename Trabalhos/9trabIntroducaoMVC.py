@@ -108,10 +108,8 @@ class Controller():
     
     def ConsultaCod(self, event):
         cont = 0
-        answer = simpledialog.askstring("Consultar clientes", "Qual o codigo??",
-                                            parent=self.view.janela)
+        answer = simpledialog.askstring("Consultar clientes", "Qual o codigo??", parent=self.view.janela)
     
-
         for cliente in self.listaClientes:
             if answer == str(cliente.codigo):
                 clienteCerto = cliente 
