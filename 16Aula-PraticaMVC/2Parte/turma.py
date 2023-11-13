@@ -116,5 +116,8 @@ class CtrlTurma():
 
     # Função para mostrar a lista de turmas.
     def mostraTurmas(self):
-        # Ainda não implementada
-        pass
+        strTurmas = "Lista de Turmas:\n"
+        for turma in self.listaTurmas:
+            strTurmas += f"Código: {turma.codigo} | Disciplina: {turma.disciplina.nome} | Estudantes: {', '.join([est.nome for est in turma.estudantes])}\n"
+        LimiteMostraTurmas(strTurmas)
+    

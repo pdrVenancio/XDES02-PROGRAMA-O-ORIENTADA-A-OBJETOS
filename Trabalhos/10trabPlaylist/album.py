@@ -31,7 +31,7 @@ class Album:
         if artista is None:
             artista = self.__artista
         nroFaixa = len(self.__faixas)
-        musica = Musica(titulo, artista, self, nroFaixa)
+        musica = Musica(titulo, artista, self)
         self.__faixas.append(musica)
 
 class VewInsereAlbum(Toplevel):
@@ -128,7 +128,7 @@ class VewMostraAlbum():
 class CtrlAlbum():
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        self.listaAlbuns = []
+        self.listaAlbuns = [Album("tp","p", "213"), Album("to","o", "213")]
 
     #deixa  a lista de album para acessar outras
     def getListaAlbum(self):
@@ -162,7 +162,6 @@ class CtrlAlbum():
         self.vewLista = VewMostraAlbum(str)
     
     def enterHandler(self, event):
-
         #verifica se o artista foi registrado
         artista = self.limiteIns.inputArtista.get()
         for art in self.nomeArts:
@@ -187,14 +186,20 @@ class CtrlAlbum():
                 ano = self.limiteIns.inputAno.get()
                 album = Album(titulo, artista, ano)
                 self.listaAlbuns.append(album)
-
                 musica = self.limiteIns.inputMusica.get()
+                self.ctrlPrincipal.ctrlMusica.addMusica(musica, artista, titulo)
                 if musica:
                     album.addFaixa(musica, artista)
 
+              
+                
+
             # caso for a inserção de uma musica em um album ja existente
             elif cont == 0:
+                
                 musica = self.limiteIns.inputMusica.get()
+                
+                self.ctrlPrincipal.ctrlMusica.addMusica(musica, artista, titulo)
                 artista = self.limiteIns.inputArtista.get()
                 if musica:
                     album.addFaixa(musica, artista)

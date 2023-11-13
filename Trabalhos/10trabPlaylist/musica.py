@@ -1,11 +1,9 @@
 class Musica:
-    def __init__(self, titulo, artista, album, nroFaixa):
+    def __init__(self, titulo, artista, album):
         self.__titulo = titulo
         self.__artista = artista
         self.__album = album
-        self.__nroFaixa = nroFaixa
 
-        #artista.addMusica(self)
 
     @property
     def titulo(self):
@@ -19,14 +17,26 @@ class Musica:
     def album(self):
         return self.__album
     
-    @property
+"""     @property
     def nroFaixa(self):
-        return self.__nroFaixa
+        return self.__nroFaixa """
     
 class CtrlMusica():
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
         self.listaMusicas = []
         
-    def getListaMusicas(self):# para q a lista de artista possa ser acessada por outros arquivos
+    def getListaMusicas(self):
         return self.listaMusicas
+    
+    """ def getListaMusicasNome(self):
+        self.listaMusicasNome = []
+
+        for musica in self.listaMusicas:
+            self.listaMusicasNome.append(musica.titulo)
+
+        return self.listaMusicasNome """
+    
+    def addMusica(self, titulo, artista, album):
+        musica = Musica(titulo,artista,album)
+        self.listaMusicas.append(musica)

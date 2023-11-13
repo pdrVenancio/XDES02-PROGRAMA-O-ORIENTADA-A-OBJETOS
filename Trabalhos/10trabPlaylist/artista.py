@@ -101,9 +101,22 @@ class VewMostraArtista():
 
 class CtrlArtista():
     def __init__(self, controlePrincipal):
-        self.listaArtistas = []
+        self.listaArtistas = [Artista("p"), Artista("o")]
         self.ctrlPrincipal = controlePrincipal
     
+    def getListaMusicasPorArtista(self, artista):
+        self.listaMusicas = []
+
+        if artista is None:
+            return self.listaMusicas
+        else:
+            for art in self.listaArtistas:
+                if art.nome == artista:
+                    # Adiciona as músicas do artista à lista
+                    self.listaMusicas.extend(art.musicas)
+
+            return self.listaMusicas
+
     def getListaNomeArtista(self):
         self.listaNomeArtista = []
         for art in self.listaArtistas:
@@ -111,6 +124,11 @@ class CtrlArtista():
         
         return self.listaNomeArtista
 
+    def getMusica(self, musicaBuscada):
+        for art in self.listaArtistas:
+            if art.musica == musicaBuscada:
+                return musicaBuscada
+            
     def getListaArtista(self):# para q a lista de artista possa ser acessada por outros arquivos
         return self.listaArtistas
 
