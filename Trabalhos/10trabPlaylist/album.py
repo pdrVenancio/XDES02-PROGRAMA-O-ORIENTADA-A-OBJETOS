@@ -130,6 +130,7 @@ class CtrlAlbum():
         self.ctrlPrincipal = controlePrincipal
         self.listaAlbuns = []
 
+    #deixa  a lista de album para acessar outras
     def getListaAlbum(self):
         return self.listaAlbuns
 
@@ -161,11 +162,10 @@ class CtrlAlbum():
         self.vewLista = VewMostraAlbum(str)
     
     def enterHandler(self, event):
-        #verifica se o artista foi registrado
 
+        #verifica se o artista foi registrado
         artista = self.limiteIns.inputArtista.get()
         for art in self.nomeArts:
-            print(art.nome)
             if art.nome == artista:
                 cont = 0
             else: 

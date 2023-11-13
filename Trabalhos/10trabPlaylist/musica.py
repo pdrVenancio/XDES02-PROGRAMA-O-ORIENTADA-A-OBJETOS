@@ -23,5 +23,10 @@ class Musica:
     def nroFaixa(self):
         return self.__nroFaixa
     
-
+class CtrlMusica():
+    def __init__(self, controlePrincipal):
+        self.ctrlPrincipal = controlePrincipal
+        self.listaMusicas = []
         
+    def getListaMusicas(self):# para q a lista de artista possa ser acessada por outros arquivos
+        return self.listaMusicas

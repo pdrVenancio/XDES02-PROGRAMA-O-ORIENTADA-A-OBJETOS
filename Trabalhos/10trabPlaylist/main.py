@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import simpledialog
 
-import artista, playlist, album
+import artista, playlist, album, musica
 
 class Vew():
     def __init__(self, root, controle) -> None:
@@ -18,15 +18,15 @@ class Vew():
         self.menubar.add_cascade(label="Artista", menu=self.artistaMenu)
 
         self.albumMenu = Menu(self.menubar)
-        self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbuns)
+        self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbum)
         self.albumMenu.add_command(label="Mostar", command=self.controle.mostrarAlbum)
         self.albumMenu.add_command(label="Consulta", command=self.controle.consultaAlbum)
         self.menubar.add_cascade(label="Album", menu=self.albumMenu)
         
 
         self.playlistMenu = Menu(self.menubar)
-        self.playlistMenu.add_command(label="Adicionar", command=self.controle.inserirPlaylists)
-        self.playlistMenu.add_command(label="Mostra", command=self.controle.mostraPlaylists)
+        self.playlistMenu.add_command(label="Adicionar", command=self.controle.inserirPlaylist)
+        self.playlistMenu.add_command(label="Mostra", command=self.controle.mostraPlaylist)
         self.menubar.add_cascade(label="Playlist", menu=self.playlistMenu)
 
         self.root.config(menu=self.menubar)
@@ -37,7 +37,9 @@ class ControlePrincipal():
 
         self.ctrlAlbum = album.CtrlAlbum(self)
         self.ctrlArtista = artista.CtrlArtista(self)
-        self.ctrlPlaylist = playlist.CtrlPlaylist()
+        self.ctrlMusica = musica.CtrlMusica(self)
+
+        self.ctrlPlaylist = playlist.CtrlPlaylist(self)
 
         self.vew = Vew(self.root, self)
 
@@ -51,7 +53,7 @@ class ControlePrincipal():
     def consultarArtistas(self):
         self.ctrlArtista.consultarArtistas()
 
-    def inserirAlbuns(self):
+    def inserirAlbum(self):
         self.ctrlAlbum.inserirAlbuns()
 
     def consultaAlbum(self):
@@ -60,11 +62,11 @@ class ControlePrincipal():
     def mostrarAlbum(self):
         self.ctrlAlbum.mostrarAlbum()
 
-    def inserirPlaylists(self):
-        self.ctrlPlaylist.inserirPlaylists()
+    def inserirPlaylist(self):
+        self.ctrlPlaylist.inserirPlaylist()
 
-    def mostraPlaylists(self):
-        self.ctrlPlaylist.mostraPlaylists()
+    def mostraPlaylist(self):
+        self.ctrlPlaylist.mostraPlaylist()
 
 if __name__ == '__main__':
     c = ControlePrincipal()

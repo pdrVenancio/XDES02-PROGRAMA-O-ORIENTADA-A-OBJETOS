@@ -1,6 +1,9 @@
 from musica import Musica
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
+
+
 
 class Playlist:
     def __init__(self, nome):
@@ -20,7 +23,7 @@ class Playlist:
         self.__musicas.append(musica)
 
 
-class LimiteInserePlaylist(Toplevel):
+class VewInserePlaylist(Toplevel):
     def __init__(self, controle, listaMusicas):
         Toplevel.__init__(self)
         self.geometry('300x250')
@@ -42,10 +45,10 @@ class LimiteInserePlaylist(Toplevel):
         self.inputNomePlaylist.pack(side="left")
 
         # Add musicas
-        self.labelPlaylist = Label(self.framePlaylist, text="Escolha a Musicas: ")
+        self.labelPlaylist = Label(self.framePlaylist, text="Escolha as Musicas: ")
         self.labelPlaylist.pack(side="left")
         self.escolhaCombo = StringVar()
-        self.combobox = Combobox(self.framePlaylist, width=15, textvariable=self.escolhaCombo)
+        self.combobox = ttk.Combobox(self.framePlaylist, width=15, textvariable=self.escolhaCombo)
         self.combobox.pack(side="left")
         self.combobox['values'] = listaMusicas
 
@@ -64,8 +67,17 @@ class LimiteInserePlaylist(Toplevel):
         messagebox.showinfo(titulo, msg)
 
 class VewMostraPlaylists():
-    def __init__(self) -> None:
+    def __init__(self):
         messagebox.showinfo("Lista de turmas", str)
 
 class CtrlPlaylist():
-    pass
+    def __init__(self, controlePrincipal) :
+        self. listaPlaylist = []
+        self.ctrlPrincipal = controlePrincipal
+
+    def inserirPlaylist(self):
+        listaMusicas = self.ctrlPrincipal.ctrlMusica.getListaMusicas()
+        self.vewInserir = VewInserePlaylist(self, listaMusicas)
+
+    
+        
