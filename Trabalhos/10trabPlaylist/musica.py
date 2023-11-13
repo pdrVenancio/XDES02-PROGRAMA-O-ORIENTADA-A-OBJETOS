@@ -29,6 +29,13 @@ class CtrlMusica():
     def getListaMusicas(self):
         return self.listaMusicas
     
+    def getMusica(self, musicaBuscada):
+        musicaRet = None
+        for musica in self.listaMusicas:
+            if musica.titulo == musicaBuscada:
+                musicaRet = musica
+        return musicaRet
+    
     """ def getListaMusicasNome(self):
         self.listaMusicasNome = []
 

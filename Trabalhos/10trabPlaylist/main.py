@@ -27,6 +27,7 @@ class Vew():
         self.playlistMenu = Menu(self.menubar)
         self.playlistMenu.add_command(label="Adicionar", command=self.controle.inserirPlaylist)
         self.playlistMenu.add_command(label="Mostra", command=self.controle.mostraPlaylist)
+        self.playlistMenu.add_command(label="Consulta", command=self.controle.consultaPlaylist)
         self.menubar.add_cascade(label="Playlist", menu=self.playlistMenu)
 
         self.root.config(menu=self.menubar)
@@ -67,6 +68,9 @@ class ControlePrincipal():
 
     def mostraPlaylist(self):
         self.ctrlPlaylist.mostraPlaylist()
+    
+    def consultaPlaylist(self):
+        self.ctrlPlaylist.consultaPlaylist()
 
 if __name__ == '__main__':
     c = ControlePrincipal()

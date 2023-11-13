@@ -123,12 +123,7 @@ class CtrlArtista():
             self.listaNomeArtista.append(art.nome)
         
         return self.listaNomeArtista
-
-    def getMusica(self, musicaBuscada):
-        for art in self.listaArtistas:
-            if art.musica == musicaBuscada:
-                return musicaBuscada
-            
+           
     def getListaArtista(self):# para q a lista de artista possa ser acessada por outros arquivos
         return self.listaArtistas
 
