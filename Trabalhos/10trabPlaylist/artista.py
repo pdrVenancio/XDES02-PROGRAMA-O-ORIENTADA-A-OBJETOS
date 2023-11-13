@@ -103,6 +103,13 @@ class CtrlArtista():
     def __init__(self, controlePrincipal):
         self.listaArtistas = []
         self.ctrlPrincipal = controlePrincipal
+    
+    def getListaNomeArtista(self):
+        self.listaNomeArtista = []
+        for art in self.listaArtistas:
+            self.listaNomeArtista.append(art.nome)
+        
+        return self.listaNomeArtista
 
     def getListaArtista(self):# para q a lista de artista possa ser acessada por outros arquivos
         return self.listaArtistas
@@ -136,9 +143,18 @@ class CtrlArtista():
 
     def enterHandler(self, event):
         nome = self.limiteIns.inputNome.get()
-        artista = Artista(nome)
-        self.listaArtistas.append(artista)
-        self.limiteIns.mostraJanela('Sucesso', 'Artista cadastrado com sucesso!')
+        cont = 1
+        for art in self.listaArtistas:
+            if art.nome == nome:
+                str = 'Artista ja cadastrado' 
+                cont = 0
+        if cont == 1:  
+            artista = Artista(nome)
+            self.listaArtistas.append(artista)
+            str = f"Artista {nome} cadastrado com sucesso"
+        
+        
+        self.limiteIns.mostraJanela('Cadastro artista', str)
         self.clearHandler(event)
 
     def clearHandler(self, event):

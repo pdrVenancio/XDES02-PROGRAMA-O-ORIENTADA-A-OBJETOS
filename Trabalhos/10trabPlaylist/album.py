@@ -166,8 +166,9 @@ class CtrlAlbum():
         #verifica se o artista foi registrado
         artista = self.limiteIns.inputArtista.get()
         for art in self.nomeArts:
-            if art.nome == artista:
+            if artista == art.nome :
                 cont = 0
+                break
             else: 
                 cont = 1
 
@@ -177,6 +178,7 @@ class CtrlAlbum():
             for album in self.listaAlbuns:
                 if titulo == album.titulo:
                     cont = 0
+                    break
 
             # caso seja a criação de um novo album
             if cont == 1:

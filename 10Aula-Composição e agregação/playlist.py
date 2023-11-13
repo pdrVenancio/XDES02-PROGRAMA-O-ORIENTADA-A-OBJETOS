@@ -125,6 +125,7 @@ if __name__ == "__main__":
     for musica in pl1.musicas:
         print(musica.titulo)
     print()
+    
     # 2) criar e exibir uma playlist com todas as musicas
     pl2 = Playlist('pl2')
     for album in listaAlbuns:

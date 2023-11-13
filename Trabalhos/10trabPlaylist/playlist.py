@@ -24,7 +24,7 @@ class Playlist:
 
 
 class VewInserePlaylist(Toplevel):
-    def __init__(self, controle, listaMusicas):
+    def __init__(self, controle, listaMusicas, listaNomeArtistas):
         Toplevel.__init__(self)
         self.geometry('300x250')
         self.title("Playlist")
@@ -45,12 +45,12 @@ class VewInserePlaylist(Toplevel):
         self.inputNomePlaylist.pack(side="left")
 
         # Add musicas
-        self.labelPlaylist = Label(self.framePlaylist, text="Escolha as Musicas: ")
+        self.labelPlaylist = Label(self.framePlaylist, text="Escolha o artista: ")
         self.labelPlaylist.pack(side="left")
         self.escolhaCombo = StringVar()
         self.combobox = ttk.Combobox(self.framePlaylist, width=15, textvariable=self.escolhaCombo)
         self.combobox.pack(side="left")
-        self.combobox['values'] = listaMusicas
+        self.combobox['values'] = listaNomeArtistas
 
         # Rótulos, listbox e botões
     
@@ -77,7 +77,8 @@ class CtrlPlaylist():
 
     def inserirPlaylist(self):
         listaMusicas = self.ctrlPrincipal.ctrlMusica.getListaMusicas()
-        self.vewInserir = VewInserePlaylist(self, listaMusicas)
+        listaNomeArtistas = self.ctrlPrincipal.ctrlArtista.getListaNomeArtista()
+        self.vewInserir = VewInserePlaylist(self, listaMusicas,listaNomeArtistas)
 
     
         
