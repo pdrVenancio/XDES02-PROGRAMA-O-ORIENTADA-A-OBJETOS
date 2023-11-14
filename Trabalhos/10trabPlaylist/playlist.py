@@ -2,6 +2,7 @@ from musica import Musica
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter import ACTIVE
 
 
 
@@ -28,7 +29,7 @@ class VewInserePlaylist(Toplevel):
     def __init__(self, controle, listaNomeArtistas):
         Toplevel.__init__(self)
         self.geometry('300x250')
-        self.title("Playlist")
+        self.title("Insere playlist")
         self.controle = controle
 
         # Aqui criamos algumas partes da janelinha, como rótulos (labels), caixas de texto, combobox e botões.
@@ -78,15 +79,11 @@ class VewInserePlaylist(Toplevel):
     def mostraJanela(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
 
-class VewMostraPlaylists():
-    def __init__(self, str):
-        messagebox.showinfo("Playlists", str)
-
 class VewConsultaPlaylist(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x100')
-        self.title("Artista")
+        self.title("consulta playlist")
         self.controle = controle
 
         self.frameBusca = Frame(self)
@@ -114,11 +111,13 @@ class CtrlPlaylist():
 
     def inserirPlaylist(self):
         self.musicasAddPlaylist = []
+        self.musicasAddPlaylist = [] #lista de musicas de uma playlist
+
         listaNomeArtistas = self.ctrlPrincipal.ctrlArtista.getListaNomeArtista()
         self.vewInserir = VewInserePlaylist(self, listaNomeArtistas)
     
     def musicaPorArtista(self, event):
-        self.vewInserir.listbox.delete(0, END) # clear listbox
+        self.vewInserir.listbox.delete(0, END) # limpa o listbox
 
         artistaSelecionado = self.vewInserir.escolhaCombo.get()
 
@@ -128,33 +127,22 @@ class CtrlPlaylist():
                 self.vewInserir.listbox.insert(END, musica.titulo)
                     
     def criaPlaylist(self, event):
-        
         nome = self.vewInserir.inputNomePlaylist.get()
         
-        playlist = Playlist(nome, self.musicasAddPlaylist)
+        playlist = Playlist(nome, self.musicasAddPlaylist)# passamos a lista de muicas refernte a playlist
         self.listaPlaylist.append(playlist)
         self.vewInserir.mostraJanela('Sucesso', 'Playlist criada com sucesso')
         self.vewInserir.withdraw()
     
     def inserirMusica(self, event):  
-        self.musicasAddPlaylist = []
         musicaSelecionada = self.vewInserir.listbox.get(ACTIVE)
-        musica = self.ctrlPrincipal.ctrlMusica.getMusica(musicaSelecionada)
-        self.musicasAddPlaylist.append(musica)
+        musica = self.ctrlPrincipal.ctrlMusica.getMusica(musicaSelecionada) 
+        self.musicasAddPlaylist.append(musica)#inserimos na lista q vais er uma playlist
 
         str = "Musica inserida:\n"
         str += f"{musica.titulo}\n"
 
         self.vewInserir.mostraJanela("criação de Playlist", str)
-
-    def mostraPlaylist(self):
-        str = "Playlists: \n\n"
-        for playlist in self.listaPlaylist:
-            str += f"{playlist.nome}:\n"
-            for musica in playlist.musicas:
-                str += f"  {musica.titulo}\n"
-                
-        self.vewLista = VewMostraPlaylists(str)
 
     def consultaPlaylist(self):
         self.vewConsulta = VewConsultaPlaylist(self)    
@@ -163,11 +151,14 @@ class CtrlPlaylist():
         nomePlaylist = self.vewConsulta.inputBusca.get()
 
         for playlist in self.listaPlaylist:
-          if playlist.nome == nomePlaylist:
-            str = f"{playlist.nome}:\n"
-            for musica in playlist.musicas:
-                str += f"  {musica.titulo}\n"
+            if playlist.nome == nomePlaylist:
+                str_resultado = f"{playlist.nome}:\n"
+                for musica in playlist.musicas:
+                    str_resultado += f"  {musica.titulo}\n"
+
+                messagebox.showinfo('Consulta', str_resultado)
+                return  # Adicionado para evitar exibir a mensagem múltiplas vezes se houver playlists com o mesmo nome
             
-        messagebox.showinfo('Cunsulta', str)  
-    
+        messagebox.showinfo('Consulta', f'Playlist "{nomePlaylist}" não encontrada.') 
+        
         

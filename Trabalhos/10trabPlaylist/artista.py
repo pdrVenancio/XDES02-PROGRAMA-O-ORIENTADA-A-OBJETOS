@@ -33,7 +33,7 @@ class VewInsereArtista(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x100')
-        self.title("Artista")
+        self.title("Inserir artista")
         self.controle = controle
 
         self.frameNome = Frame(self)
@@ -66,7 +66,7 @@ class VewConsultaArtista(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x100')
-        self.title("Artista")
+        self.title("Buscar artista")
         self.controle = controle
 
         self.frameBusca = Frame(self)
@@ -84,24 +84,12 @@ class VewConsultaArtista(Toplevel):
         self.buttonSubmit.pack(side="left")
         self.buttonSubmit.bind("<Button>", controle.buscaHandler)
 
-        self.buttonClear = Button(self.frameButton, text="Clear")
-        self.buttonClear.pack(side="left")
-        self.buttonClear.bind("<Button>", controle.clearHandler)
-
-        self.buttonFecha = Button(self.frameButton, text="Concluído")
-        self.buttonFecha.pack(side="left")
-        self.buttonFecha.bind("<Button>", controle.fechaHandler)
-
     def mostraJanela(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
                
-class VewMostraArtista():
-    def __init__(self, str):
-        messagebox.showinfo('Lista de artistas', str)
-
 class CtrlArtista():
     def __init__(self, controlePrincipal):
-        self.listaArtistas = [Artista("p"), Artista("o")]
+        self.listaArtistas = []
         self.ctrlPrincipal = controlePrincipal
     
     def getListaMusicasPorArtista(self, artista):
@@ -134,12 +122,6 @@ class CtrlArtista():
     def inserirArtistas(self):
         self.limiteIns = VewInsereArtista(self)
     
-    def mostraArtistas(self):
-        str = "Nome\n"
-        for art in self.listaArtistas:
-            str += art.nome + "\n"
-        self.vewLista = VewMostraArtista(str)
-    
     def buscaHandler(self, event):
         artista = self.vewConsulta.inputBusca.get()
 
@@ -149,10 +131,11 @@ class CtrlArtista():
                 for alb in self.listaAlbuns:
                     if alb.artista == artista:
                         str += f"\n{alb.titulo}"
+                break
             else:
                 str =  f'Artista {artista} nao existe na lista!'
             
-            messagebox.showinfo('Cunsulta', str)
+        messagebox.showinfo('Cunsulta', str)
 
     def enterHandler(self, event):
         nome = self.limiteIns.inputNome.get()

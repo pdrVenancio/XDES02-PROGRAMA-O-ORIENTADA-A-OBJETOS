@@ -30,7 +30,6 @@ class Album:
     def addFaixa(self, titulo, artista=None):
         if artista is None:
             artista = self.__artista
-        nroFaixa = len(self.__faixas)
         musica = Musica(titulo, artista, self)
         self.__faixas.append(musica)
 
@@ -38,7 +37,7 @@ class VewInsereAlbum(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x200')
-        self.title("Album")
+        self.title("IInsere album")
         self.controle = controle
 
         self.frameTitulo = Frame(self)
@@ -92,7 +91,7 @@ class VewConsultaAlbum(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x100')
-        self.title("Artista")
+        self.title("Consulta album")
         self.controle = controle
 
         self.frameBusca = Frame(self)
@@ -110,13 +109,6 @@ class VewConsultaAlbum(Toplevel):
         self.buttonSubmit.pack(side="left")
         self.buttonSubmit.bind("<Button>", controle.buscaHandler)
 
-        self.buttonClear = Button(self.frameButton, text="Clear")
-        self.buttonClear.pack(side="left")
-        self.buttonClear.bind("<Button>", controle.clearHandler)
-
-        self.buttonFecha = Button(self.frameButton, text="Concluído")
-        self.buttonFecha.pack(side="left")
-        self.buttonFecha.bind("<Button>", controle.fechaHandler)
 
     def mostraJanela(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
@@ -128,7 +120,7 @@ class VewMostraAlbum():
 class CtrlAlbum():
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        self.listaAlbuns = [Album("tp","p", "213"), Album("to","o", "213")]
+        self.listaAlbuns = []
 
     #deixa  a lista de album para acessar outras
     def getListaAlbum(self):
@@ -140,16 +132,6 @@ class CtrlAlbum():
     def inserirAlbuns(self):
         self.nomeArts = self.ctrlPrincipal.ctrlArtista.getListaArtista()
         self.limiteIns = VewInsereAlbum(self)
-    
-    def mostrarAlbum(self):
-        str = "Lsita de albuns:\n"
-        for alb in self.listaAlbuns:
-            str += f"Titulo: {alb.titulo} \nArtista: {alb.artista}\nAno: {alb.ano}\nFaixas:"
-            for faixa in alb.faixas:
-                str += f"\n  {faixa.titulo}"
-            str += "\n\n"
-
-        self.vewLista = VewMostraAlbum(str)
     
     def buscaHandler(self,event):
         str = "Lsita de musicas:\n"
@@ -191,9 +173,6 @@ class CtrlAlbum():
                 if musica:
                     album.addFaixa(musica, artista)
 
-              
-                
-
             # caso for a inserção de uma musica em um album ja existente
             elif cont == 0:
                 
@@ -218,3 +197,4 @@ class CtrlAlbum():
     
     def fechaHandler(self, event):
         self.limiteIns.destroy()
+    

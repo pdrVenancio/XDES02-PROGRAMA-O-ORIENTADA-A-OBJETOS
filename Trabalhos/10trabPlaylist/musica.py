@@ -17,10 +17,6 @@ class Musica:
     def album(self):
         return self.__album
     
-"""     @property
-    def nroFaixa(self):
-        return self.__nroFaixa """
-    
 class CtrlMusica():
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
@@ -35,14 +31,6 @@ class CtrlMusica():
             if musica.titulo == musicaBuscada:
                 musicaRet = musica
         return musicaRet
-    
-    """ def getListaMusicasNome(self):
-        self.listaMusicasNome = []
-
-        for musica in self.listaMusicas:
-            self.listaMusicasNome.append(musica.titulo)
-
-        return self.listaMusicasNome """
     
     def addMusica(self, titulo, artista, album):
         musica = Musica(titulo,artista,album)

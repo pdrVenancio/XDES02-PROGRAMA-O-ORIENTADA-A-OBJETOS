@@ -19,14 +19,12 @@ class Vew():
 
         self.albumMenu = Menu(self.menubar)
         self.albumMenu.add_command(label="Adicionar", command=self.controle.inserirAlbum)
-        self.albumMenu.add_command(label="Mostar", command=self.controle.mostrarAlbum)
         self.albumMenu.add_command(label="Consulta", command=self.controle.consultaAlbum)
         self.menubar.add_cascade(label="Album", menu=self.albumMenu)
         
 
         self.playlistMenu = Menu(self.menubar)
         self.playlistMenu.add_command(label="Adicionar", command=self.controle.inserirPlaylist)
-        self.playlistMenu.add_command(label="Mostra", command=self.controle.mostraPlaylist)
         self.playlistMenu.add_command(label="Consulta", command=self.controle.consultaPlaylist)
         self.menubar.add_cascade(label="Playlist", menu=self.playlistMenu)
 
@@ -60,14 +58,8 @@ class ControlePrincipal():
     def consultaAlbum(self):
         self.ctrlAlbum.consultaAlbum()
 
-    def mostrarAlbum(self):
-        self.ctrlAlbum.mostrarAlbum()
-
     def inserirPlaylist(self):
         self.ctrlPlaylist.inserirPlaylist()
-
-    def mostraPlaylist(self):
-        self.ctrlPlaylist.mostraPlaylist()
     
     def consultaPlaylist(self):
         self.ctrlPlaylist.consultaPlaylist()
