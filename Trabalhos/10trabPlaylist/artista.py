@@ -130,7 +130,10 @@ class CtrlArtista():
                 str = f'O artista {artista} possue os seguintes albuns:\n'
                 for alb in self.listaAlbuns:
                     if alb.artista == artista:
-                        str += f"\n{alb.titulo}"
+                        str += f"\n{alb.titulo} \n"
+                        for musica in alb.faixas:
+                            str += f"{musica.titulo}\n"
+                        
                 break
             else:
                 str =  f'Artista {artista} nao existe na lista!'
