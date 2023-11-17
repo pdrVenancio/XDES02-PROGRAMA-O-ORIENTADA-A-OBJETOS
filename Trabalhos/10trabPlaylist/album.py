@@ -37,7 +37,7 @@ class VewInsereAlbum(Toplevel):
     def __init__(self, controle):
         Toplevel.__init__(self)
         self.geometry('250x200')
-        self.title("IInsere album")
+        self.title("Insere album")
         self.controle = controle
 
         self.frameTitulo = Frame(self)
