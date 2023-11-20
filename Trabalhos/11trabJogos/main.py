@@ -16,6 +16,7 @@ class Vew():
         self.jogoMenu.add_command(label="Adicionar", command=self.controle.inserirJogo)
         self.jogoMenu.add_command(label="Consulta", command=self.controle.consultarJogo)
         self.jogoMenu.add_command(label="Avaliar", command=self.controle.avaliaJogo)
+        self.jogoMenu.add_command(label="Salva", command=self.controle.salvaDados)
         self.menubar.add_cascade(label="Jogos", menu=self.jogoMenu)
 
         self.root.config(menu=self.menubar)
@@ -40,6 +41,10 @@ class ControlePrincipal():
 
     def avaliaJogo(self):
         self.ctrlJogo.avaliaJogo()
+
+    def salvaDados(self):
+        self.ctrlJogo.salvaJogo()
+        self.root.destroy()
 
 
     

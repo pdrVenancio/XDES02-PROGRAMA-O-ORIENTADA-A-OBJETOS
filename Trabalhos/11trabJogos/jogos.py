@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import messagebox ,ttk
+import pickle
+import os.path
 
 class JogoCadastroException(Exception):
     pass
@@ -150,7 +152,12 @@ class ViewConsultaJogo(Toplevel):
 
 class CtrlJogo():
     def __init__(self ,controlePrincipal):
-        self.listaJogos = []
+        if not os.path.isfile("jogos.pickle"):
+            self.listaJogos =  []
+        else:
+            with open("jogos.pickle", "rb") as f:
+                self.listaJogos = pickle.load(f)
+        
         self.ctrlPrincipal = controlePrincipal
 
     def inserirJogo(self):
@@ -243,6 +250,11 @@ class CtrlJogo():
             media = 5
 
         else: 
-            media = "Erro noa calculo..."
+            media = "Erro no calculo..."
 
         return media
+
+    def salvaJogo(self):
+        if len(self.listaJogos) != 0:
+            with open("jogos.pickle","wb") as f:
+                pickle.dump(self.listaJogos, f)
