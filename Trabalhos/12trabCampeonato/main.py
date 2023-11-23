@@ -8,7 +8,6 @@ import equipe
 
 
 class LimitePrincipal():
-
     def __init__(self, root, controle):
         self.root = root
         self.controle = controle
@@ -20,12 +19,17 @@ class LimitePrincipal():
         self.menuEquipe.add_command(label='Cadastrar Equipe', command=self.controle.cadastraEquipe)
         self.menuEquipe.add_command(label='Consultar Equipe', command=self.controle.consultaEquipe)
         self.menuEquipe.add_command(label="Salva", command=self.controle.salvaDados)
+        self.menuEquipe.add_command(label="Dados do campeonato", command=self.controle.dadosCampeonato)
         self.menubar.add_cascade(label='Equipe', menu=self.menuEquipe)
-
+        
         self.root.config(menu=self.menubar)
 
-        self.frameNota = tkinter.Frame()
-        self.frameNota.pack()
+        self.frameNome = tkinter.Frame(self.root)
+        self.frameNome.pack()
+        self.labelNome = tkinter.Label(self.frameNome, text="Pedro Venâncio dos Santos - 2023010066")
+        self.labelNome.pack(side="left")
+
+
 
 class ControlePrincipal():
     def __init__(self):
@@ -47,6 +51,9 @@ class ControlePrincipal():
         
     def consultaEquipe(self):
         self.ctrlEquipe.consultaEquipe()
+    
+    def dadosCampeonato(self):
+        self.ctrlEquipe.dadosCampeonato()
 
     def salvaDados(self):
         self.ctrlEquipe.salvaEquipe()

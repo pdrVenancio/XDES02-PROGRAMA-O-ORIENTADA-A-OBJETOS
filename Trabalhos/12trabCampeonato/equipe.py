@@ -81,6 +81,20 @@ class ViewConsultaEquipe(tkinter.Toplevel):
     def mostraJanela(self, titulo, msg):
             messagebox.showinfo(titulo, msg)
 
+class ViewDadosCampeonato(tkinter.Toplevel):
+    def __init__(self, controle, media, estudantes, equipes):
+        tkinter.Toplevel.__init__(self)
+        self.geometry('500x500')
+        self.title("Consulta campeonato")
+        self.controle = controle
+
+        #sigla do curso 
+        self.frameSigla = tkinter.Frame(self)
+        self.frameSigla.pack()
+        self.labelSigla = tkinter.Label(self.frameSigla, text=f"Número de equipes: {equipes} \nNúmero total de estudantes: {estudantes}\nMédia de estudante por equipe: {media}")
+        self.labelSigla.pack(side="left")
+
+
 class CtrlEquipe():
     def __init__(self, contolePrincipal):
         if not os.path.isfile("Equipe.pickle"):
@@ -159,8 +173,15 @@ class CtrlEquipe():
             with open("Equipe.pickle","wb") as f:
                 pickle.dump(self.listaEquipes, f)
 
-        
-        
+    def dadosCampeonato(self):
+        nEquipe = len(self.listaEquipes)
+        nEstudante = 0
+        for equipe in self.listaEquipes:
+            nEstudante += len(equipe.jogadores)
+
+        media = nEstudante / nEquipe
+
+        self.viewDadosCampeonato = ViewDadosCampeonato(self, media, nEstudante, nEquipe)
 
         
 
