@@ -14,15 +14,15 @@ class Curso:
         return self.__nome
 
 class CtrlCurso():
-    def __init__(self, controlePrincipal) -> None:
+    def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        c1 = Curso("CCO", "Ciência da Computação")
-        c2 = Curso("SIN", "Sistemas de Informação")
-        c3 = Curso("EEL", "Engenharia Elétrica")
+        c1 = Curso("CCO", "Ciencia da Computacao")
+        c2 = Curso("SIN", "Sistemas de Informacao")
+        c3 = Curso("EEL", "Engenharia Eletrica")
         self.listaCurso = []
         self.listaCurso.append(c1)
         self.listaCurso.append(c2)
         self.listaCurso.append(c3)
     
-    def getListaCursos(self):
+    def getListaCurso(self):
         return self.listaCurso

@@ -1,4 +1,5 @@
 import tkinter
+import curso
 
 class Estudante:
     def __init__(self, nroMatricula, nome, curso) -> None:
@@ -22,7 +23,12 @@ class Estudante:
 class CtrlEstudante():
     def __init__(self, controlePrincipal) -> None:
         self.ctrlPrincipal = controlePrincipal
-        self.listaEstudante
+        
+        controleCurso = curso.CtrlCurso(controlePrincipal)# Essa linha está criando uma instância do controlador de cursos (CtrlCurso) 
+        c1 = controleCurso.getListaCurso()[0]
+        c2 = controleCurso.getListaCurso()[1]
+    
+        self.listaEstudante = []
         self.listaEstudante.append(Estudante(1001, "José da Silva", c1))
         self.listaEstudante.append(Estudante(1002, "João de Souza", c1))
         self.listaEstudante.append(Estudante(1003, "Rui Santos", c2))
@@ -34,5 +40,5 @@ class CtrlEstudante():
         self.listaEstudante.append(Estudante(1009, "Santos", c2))
         self.listaEstudante.append(Estudante(1009, "Pedro", c2))
 
-    def getListaEstudantes(self):
-        return self.getListaEstudantes
+    def getListaEstudante(self):
+        return self.listaEstudante
