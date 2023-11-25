@@ -109,7 +109,7 @@ class ViewConsultarCliente(tkinter.Toplevel):
         messagebox.showerror(titulo, msg)
 
 class CtrlCliente():
-    listaClientes = []
+    listaClientes = [Cliente("nome", "endereco", "email", "cpf"),]
     # if not os.path.isfile("jogo.pickle"):
     #         listaJogo =  []
     # else:

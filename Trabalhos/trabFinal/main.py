@@ -24,6 +24,7 @@ class LimitePrincipal():
         self.menuCliente = tkinter.Menu(self.menubar, tearoff=0)
         self.menuProduto = tkinter.Menu(self.menubar, tearoff=0)
         self.menuNota = tkinter.Menu(self.menubar, tearoff=0)
+        self.menuFaturamento = tkinter.Menu(self.menubar, tearoff=0)
         self.menuSair = tkinter.Menu(self.menubar, tearoff=0)
 
         self.menuCliente.add_command(label='Cadastrar cliente', command=self.controle.cadastrarCliente)
@@ -36,24 +37,21 @@ class LimitePrincipal():
         self.menuProduto.add_command(label='Consulta produto', command=self.controle.consultaProduto)
         self.menubar.add_cascade(label='Produto', menu=self.menuProduto)
 
+        self.menuFaturamento.add_command(label='Faturamento Produto', command=self.controle.fatProduto)
+        self.menuFaturamento.add_command(label='Faturamento Cliente', command=self.controle.fatCliente)
+        self.menuFaturamento.add_command(label='Faturamento por periodo', command=self.controle.fatPeriodo)
+        self.menuFaturamento.add_command(label='Faturamento de um cliente em um periodo', command=self.controle.fatPeriodoCliente)
+        self.menubar.add_cascade(label='Faturamento', menu=self.menuFaturamento)
+
+      
+
         self.menuNota.add_command(label='Emitir nota', command=self.controle.emitirNota)
         self.menubar.add_cascade(label='Nota', menu=self.menuNota)
 
         self.root.config(menu=self.menubar)
 
-        #Não sei se vai ser assim
-        self.frameNota = tkinter.Frame()
-        self.frameNota.pack()
-
-        self.labelCodigo = tkinter.Label(self.frameNota, text="Codigo: ")
-        self.labelCodigo.pack(side="left")
-        self.entryCodigo = tkinter.Entry(self.frameNota)
-        self.entryCodigo.pack(side="left")
-        #
-
 
 class ControlePrincipal():
-
     def __init__(self):
         self.root = tkinter.Tk()
         self.root.geometry("300x300")
@@ -86,6 +84,19 @@ class ControlePrincipal():
     #NOTA FISCAL
     def emitirNota(self):
         self.ctrlNota.emitirNota()
+
+    #FATURAMENTO
+    def fatProduto(self):
+        self.ctrlNota.fatProduto()
+
+    def fatCliente(self):
+        self.ctrlNota.fatCliente()
+
+    def fatPeriodo(self):
+        self.ctrlNota.fatPeriodo()
+
+    def fatPeriodoCliente(self):
+        self.ctrlNota.fatPeriodoCliente()
 
 if __name__ == "__main__":
     c = ControlePrincipal()

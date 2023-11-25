@@ -51,8 +51,7 @@ class ViewCadastroProduto(tkinter.Toplevel):
 
                 self.labelCod = tkinter.Label(self.frameCod, text="Codigo: ")
                 self.labelCod.pack(side="left")
-                self.labelDescricao = tkinter.Label(self.frameDescricao,
-                                                                                        text="Descricao: ")
+                self.labelDescricao = tkinter.Label(self.frameDescricao, text="Descricao: ")
                 self.labelDescricao.pack(side="left")
                 self.labelPreco = tkinter.Label(self.framePreco, text="Preco por Kg: ")
                 self.labelPreco.pack(side="left")
@@ -114,8 +113,7 @@ class ViewAlteraProduto(tkinter.Toplevel):
 
                 self.labelCod = tkinter.Label(self.frameCod, text="Cod: ")
                 self.labelCod.pack(side="left")
-                self.labelDescricao = tkinter.Label(self.frameDescricao,
-                                                                                        text="Descricao: ")
+                self.labelDescricao = tkinter.Label(self.frameDescricao, text="Descricao: ")
                 self.labelDescricao.pack(side="left")
                 self.labelPreco = tkinter.Label(self.framePreco, text="Preco: ")
                 self.labelPreco.pack(side="left")
@@ -160,53 +158,57 @@ class ViewConsultaProduto(tkinter.Toplevel):
 #controle principal
 class CtrlProduto():
         def __init__(self, controleprincipal) -> None:
-                self.controlePrincipal = controleprincipal
-                self.listaProdutos = []
+            self.controlePrincipal = controleprincipal
+            self.listaProdutos = [Produto("1", "Arroz", 1),
+                                 Produto("2", "Feijão", 2),
+                                 Produto("3", "Batata", 3),
+                                 Produto("4", "Carne de frango", 4),
+                                 Produto("5", "Maça", 5),]
 
         def getListaProduto(self):
           return self.listaProdutos
 
         def cadastraProduto(self):
-                self.viewCadastroProduto = ViewCadastroProduto(self)
+            self.viewCadastroProduto = ViewCadastroProduto(self)
 
         def removeProduto(self):
-                self.viewRemoveProduto = ViewRemoveProduto(self)
+            self.viewRemoveProduto = ViewRemoveProduto(self)
 
         def alteraProduto(self):
-                self.viewAlteraProduto = ViewAlteraProduto(self)
+            self.viewAlteraProduto = ViewAlteraProduto(self)
             
         def consultaProduto(self):
             self.viewConsultaProduto = ViewConsultaProduto(self)
 
         def cadastrarProduto(self, event):
-                cod = self.viewCadastroProduto.inputCod.get()
-                descricao = self.viewCadastroProduto.inputDescricao.get()
-                preco = self.viewCadastroProduto.inputPreco.get()
-                produto = Produto(cod, descricao, preco)
-                self.listaProdutos.append(produto)
+            cod = self.viewCadastroProduto.inputCod.get()
+            descricao = self.viewCadastroProduto.inputDescricao.get()
+            preco = self.viewCadastroProduto.inputPreco.get()
+            produto = Produto(cod, descricao, preco)
+            self.listaProdutos.append(produto)
 
-                self.viewCadastroProduto.mostraJanela('Cadastro', 'Produto cadastrado com sucesso')
+            self.viewCadastroProduto.mostraJanela('Cadastro', 'Produto cadastrado com sucesso')
+            self.viewCadastroProduto.destroy()
 
         def removerProduto(self, event):
-                cod = self.viewRemoveProduto.inputCod.get()
+            cod = self.viewRemoveProduto.inputCod.get()
 
-                for produto in self.listaProdutos:
-                        if produto.codigo == cod:
-                            self.listaProdutos.remove(produto)
-                            self.viewRemoveProduto.mostraJanela('Remover', 'Produto removido com sucesso')
-                            break
+            for produto in self.listaProdutos:
+                    if produto.codigo == cod:
+                        self.listaProdutos.remove(produto)
+                        self.viewRemoveProduto.mostraJanela('Remover', 'Produto removido com sucesso')
+                        break
 
         def alterarProduto(self, event):
-                cod = self.viewAlteraProduto.inputCod.get()
-                descricao = self.viewAlteraProduto.inputDescricao.get()
-                preco = self.viewAlteraProduto.inputPreco.get()
+            cod = self.viewAlteraProduto.inputCod.get()
+            descricao = self.viewAlteraProduto.inputDescricao.get()
+            preco = self.viewAlteraProduto.inputPreco.get()
 
-                for produto in self.listaProdutos:
-                        if produto.codigo == cod:
-                                produto.descricao = descricao
-                                produto.precoPerKg = preco
-                                self.viewAlteraProduto.mostraJanela(
-                                        'Alterar', 'Produto alterado com sucesso')
+            for produto in self.listaProdutos:
+                    if produto.codigo == cod:
+                            produto.descricao = descricao
+                            produto.precoPerKg = preco
+                            self.viewAlteraProduto.mostraJanela('Alterar', 'Produto alterado com sucesso')
             #Tatar erro caso nao tenha o codigo
 
 #funcao para consultar produto
@@ -221,4 +223,8 @@ class CtrlProduto():
                 msg = "Produto não encontrado"
             
             self.viewConsultaProduto.mostraJanela('Consulta', msg)
+
+
+        def returnListaProd(self):
+            return self.listaProdutos
                 
