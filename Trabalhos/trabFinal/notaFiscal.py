@@ -3,6 +3,7 @@ import tkinter
 from tkinter import messagebox
 from typing import Text
 import cliente
+from collections import Counter
 
 
 class NotaFiscal():
@@ -230,6 +231,19 @@ class ViewFaturamentoPeriodoCliente(tkinter.Toplevel):
         self.buttonSubmit = tkinter.Button(self.frameButton, text="Consultar")
         self.buttonSubmit.pack(side="left")
         self.buttonSubmit.bind("<Button>", controle.faturamentoPeriodoCliente)
+
+class ViewRankProdutos(tkinter.Toplevel):
+    def __init__(self, controle):
+        tkinter.Toplevel.__init__(self)
+        self.geometry("300x300")
+        self.title("Produtos mais vendidos")
+        self.controle = controle
+
+        self.frameButton = tkinter.Frame(self)
+        self.frameButton.pack()
+        self.buttonSubmit = tkinter.Button(self.frameButton, text="Consultar Produtos mais vendidos")
+        self.buttonSubmit.pack(side="left")
+        self.buttonSubmit.bind("<Button>", controle.produtosMaisvendidos)
   
 class CtrlNotaFiscal():
 
@@ -373,5 +387,62 @@ class CtrlNotaFiscal():
         msg += f"\n\nTotal de notas Emitidas: {cont}"
         self.viewEmitirNota.mostraSucesso("Faturamento",msg)
 
-    
-#usar o faturamento por produto para ranquear a venda 
+    def rankProdutos(self):
+        self.viewRankProdutos = ViewRankProdutos(self) 
+#Preciso saber quis sao os 5 produtos mais vendidos
+    def produtosMaisVendidos(self):
+# Criar um dicionário para armazenar informações sobre os produtos
+        info_produtos = {}
+        
+        # Iterar sobre todas as notas fiscais
+        for nota in self.listaNota:
+            for produto in nota.produtos:
+                cod_produto = produto[0]
+                descricao = ""
+                preco_por_kg = 0
+        
+                # Procurar as informações do produto na lista de produtos
+                for prd in self.listaProdutos:
+                    if prd.codigo == cod_produto:
+                        descricao = prd.descricao
+                        preco_por_kg = prd.precoPerKg
+                        break
+        
+                # Calcular o valor total obtido com a venda do produto
+                valor_total = produto[2] * preco_por_kg
+        
+                # Atualizar as informações do produto no dicionário
+                if cod_produto not in info_produtos:
+                    info_produtos[cod_produto] = {
+                        "descricao": descricao,
+                        "preco_por_kg": preco_por_kg,
+                        "quantidade_vendida": produto[2],
+                        "valor_total": valor_total
+                    }
+                else:
+                    info_produtos[cod_produto]["quantidade_vendida"] += produto[2]
+                    info_produtos[cod_produto]["valor_total"] += valor_total
+        
+        # # info_produtos.items(): Transforma o dicionário info_produtos em uma lista de tuplas,
+        # onde cada tupla contém um par chave-valor do dicionário. A função items() retorna uma visão de todos os 
+        # itens no dicionário, e o sorted posterior ordenará essas tuplas.
+
+        # # sorted(...): Ordena a lista de tuplas com base em um critério específico. 
+        # O argumento key é uma função que especifica uma chave de classificação. Neste caso, é uma função lambda que extrai o valor 
+        # associado à chave quantidade_vendida no segundo elemento da tupla (x[1]).
+
+        # # reverse=True: Indica que a ordenação deve ser feita em ordem decrescente. 
+        # Ou seja, os itens com a maior quantidade vendida aparecerão primeiro.
+
+        # # [:5]: Realiza uma fatia na lista resultante, pegando apenas os primeiros cinco elementos. 
+        # Isso garante que a lista produtos_mais_vendidos contenha apenas as informações dos cinco produtos mais vendidos.
+        produtos_mais_vendidos = sorted(info_produtos.items(), key=lambda x: x[1]["quantidade_vendida"], reverse=True)[:5]# Ordenar a lista 
+        
+
+        msg = "Os 5 produtos mais vendidos:\n\n"
+        p = 1
+        for cod_produto, info in produtos_mais_vendidos:
+            
+            msg +=f"{p} posicao: \n Código: {cod_produto},\n Descrição: {info['descricao']}\n Preço por Kg: {info['preco_por_kg']}\n Quantidade Vendida: {info['quantidade_vendida']} kg \n Valor Total: R${info['valor_total']:.2f}\n\n"
+            p+=1
+        self.viewEmitirNota.mostraSucesso("Rank Produtos", msg)

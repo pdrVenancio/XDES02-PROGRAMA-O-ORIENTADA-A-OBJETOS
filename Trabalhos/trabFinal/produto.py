@@ -184,6 +184,11 @@ class CtrlProduto():
             cod = self.viewCadastroProduto.inputCod.get()
             descricao = self.viewCadastroProduto.inputDescricao.get()
             preco = self.viewCadastroProduto.inputPreco.get()
+
+            if len(cod) == 0 or len(descricao) == 0 or len(preco) == 0:
+                self.viewCadastroProduto.mostraJanela("Erro", "Preencha todos os campos!")
+                return
+            
             produto = Produto(cod, descricao, preco)
             self.listaProdutos.append(produto)
 
@@ -193,28 +198,47 @@ class CtrlProduto():
         def removerProduto(self, event):
             cod = self.viewRemoveProduto.inputCod.get()
 
+            if len(cod) == 0:
+                self.viewCadastroProduto.mostraJanela("Erro", "Preencha o campo vazio!")
+                return
+
             for produto in self.listaProdutos:
                     if produto.codigo == cod:
                         self.listaProdutos.remove(produto)
                         self.viewRemoveProduto.mostraJanela('Remover', 'Produto removido com sucesso')
                         break
+            else:
+                self.viewRemoveProduto.mostraJanela('Remover', 'Produto não pode ser removido')
 
         def alterarProduto(self, event):
             cod = self.viewAlteraProduto.inputCod.get()
             descricao = self.viewAlteraProduto.inputDescricao.get()
             preco = self.viewAlteraProduto.inputPreco.get()
 
+            if len(cod) == 0 or len(descricao) == 0 or len(preco) == 0:
+                self.viewCadastroProduto.mostraJanela("Erro", "Preencha todos os campos!")
+                return
+
             for produto in self.listaProdutos:
-                    if produto.codigo == cod:
-                            produto.descricao = descricao
-                            produto.precoPerKg = preco
-                            self.viewAlteraProduto.mostraJanela('Alterar', 'Produto alterado com sucesso')
-            #Tatar erro caso nao tenha o codigo
+                if produto.codigo == cod:
+                    produto.descricao = descricao
+                    produto.precoPerKg = preco
+                    self.viewAlteraProduto.mostraJanela('Alterar', 'Produto alterado com sucesso')
+                    break
+            else:
+                self.viewAlteraProduto.mostraJanela('Erro', 'Produto não encontrado')
+    
+            self.viewAlteraProduto.destroy()
 
 #funcao para consultar produto
         def consultarProduto(self, event):
             cod = self.viewConsultaProduto.inputCod.get()
             msg = ""
+
+            if len(cod) == 0:
+                self.viewCadastroProduto.mostraJanela("Erro", "Preencha todos os campos!")
+                return
+            
             for prod in self.listaProdutos:
                 if cod == prod.codigo:
                     msg += f'Preço po kg: {prod.precoPerKg}\nDescrição: {prod.descricao}\n'

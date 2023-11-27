@@ -128,6 +128,11 @@ class CtrlCliente():
         endereco = self.viewCliente.inputEndereco.get()
         email = self.viewCliente.inputEmail.get()
         cpf = self.viewCliente.inputCpf.get()
+
+        if len(nome) == 0 or len(endereco) == 0 or len(email) == 0 or len(cpf) == 0:
+            self.viewCliente.mostraErro("Erro", "Preencha todos os campos!")
+            return
+        
         cliente = Cliente(nome, endereco, email, cpf)
         self.listaClientes.append(cliente)
         self.viewCliente.destroy()
@@ -144,6 +149,11 @@ class CtrlCliente():
     def botaoConsultarCliente(self, event):
         cpf = self.viewCliente.inputCpf.get()
         msg = ""
+
+        if len(cpf) == 0:
+            self.viewCliente.mostraErro("Erro", "Preencha o campo CPF!")
+            return
+        
         for cliente in self.listaClientes:
             if cliente.cpf == cpf:
                 msg = "Nome: " + cliente.nome + "\n" + "Endereço: " + cliente.endereco

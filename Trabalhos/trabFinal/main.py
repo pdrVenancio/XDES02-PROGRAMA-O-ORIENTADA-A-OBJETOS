@@ -46,6 +46,7 @@ class LimitePrincipal():
       
 
         self.menuNota.add_command(label='Emitir nota', command=self.controle.emitirNota)
+        self.menuNota.add_command(label='Top 5', command=self.controle.rankProdutos)
         self.menubar.add_cascade(label='Nota', menu=self.menuNota)
 
         self.root.config(menu=self.menubar)
@@ -84,6 +85,9 @@ class ControlePrincipal():
     #NOTA FISCAL
     def emitirNota(self):
         self.ctrlNota.emitirNota()
+
+    def rankProdutos(self):
+        self.ctrlNota.produtosMaisVendidos()
 
     #FATURAMENTO
     def fatProduto(self):
