@@ -198,11 +198,13 @@ class CtrlVinho():
         preco = int(self.limiteIns.inputPreco.get())
 
         try:
+            # Tenta criar uma instância de Vinho e adicioná-la à lista de vinhos
             vinho = Vinho(codigo, nome, tipo, variedade, origem, preco)
             self.listaVinhos.append(vinho)            
             self.limiteIns.mostraJanela('Sucesso', 'Vinho cadastrado com sucesso')
             self.clearHandler(event)
         except ValueError as error:
+            # Captura exceção em caso de erro de validação e exibe uma mensagem de erro
             self.limiteIns.mostraJanela('Erro', error)            
     
 
