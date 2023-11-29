@@ -1,4 +1,4 @@
-import tkinter
+
 
 class Curso:
     def __init__(self, sigla, nome) -> None:

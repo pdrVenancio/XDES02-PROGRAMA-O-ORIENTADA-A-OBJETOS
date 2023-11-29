@@ -6,26 +6,32 @@ import arq3
 
 class LimitePrincipal():
     def __init__(self, root, controle):
-        self.root = root
         self.controle = controle
+        self.root = root    #root é a main window
+        self.root.geometry('300x200')
 
-        self.menubar = tkinter.Menu(self.root)
-        self.menu1 = tkinter.Menu(self.menubar, tearoff=0)
-        self.menuSair = tkinter.Menu(self.menubar, tearoff=0)
+        self.menubar = tkinter.Menu(self.root)           #cria uma barra de menu para a janela root
 
-        #sub menu
-        self.menu1.add_command(label='1', command=self.controle.funcao1)
-        self.menu1.add_command(label='2', command=self.controle.funcao2)
-        self.menu1.add_command(label="3", command=self.controle.funcao3)
-        self.menu1.add_command(label="Salva", command=self.controle.salvaDados)
-        self.menubar.add_cascade(label='menu', menu=self.menu1)
-        
-        self.root.config(menu=self.menubar)
+              #cria um menu para ser inserido na barra de menu
+    
+        # Menu 1
+        self.menu1 = tkinter.Menu(self.menubar)
+        self.menu1.add_command(label="Cadastrar", command=self.controle.cadastrar1)         #Botão Cadastrar
+        self.menu1.add_command(label="Consultar", command=self.controle.consultar1)         #Botão Consultar
+        self.menubar.add_cascade(label="1", menu=self.menu1)                                #Menu
 
-        self.frameNome = tkinter.Frame(self.root)
-        self.frameNome.pack()
-        self.labelNome = tkinter.Label(self.frameNome, text="Pedro Venâncio dos Santos - 2023010066")
-        self.labelNome.pack(side="left")
+        # Menu 2
+        self.menu2 = tkinter.Menu(self.menubar)
+        self.menu2.add_command(label="Fechar", command=self.controle.gerar2)                #Botão Criar 2
+        self.menubar.add_cascade(label="2", menu=self.menu2)                                #Menu
+
+        # Menu 3
+        self.menu3 = tkinter.Menu(self.menubar)
+        self.menu3.add_command(label="Faturamento", command=self.controle.gerar3)           #Botão Faturamento
+        self.menubar.add_cascade(label="Relatório", menu=self.menu3)                        #Menu
+
+        self.root.config(menu=self.menubar) #Configuração do Menu
+
 
 
 

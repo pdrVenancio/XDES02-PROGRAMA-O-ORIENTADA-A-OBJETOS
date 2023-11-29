@@ -1,4 +1,4 @@
-import tkinter
+
 import curso
 
 class Estudante:
