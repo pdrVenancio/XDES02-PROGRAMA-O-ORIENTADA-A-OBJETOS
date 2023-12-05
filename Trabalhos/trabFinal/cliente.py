@@ -1,5 +1,7 @@
 import tkinter
 from tkinter import messagebox
+import pickle
+import os.path
 
 class Cliente():
     def __init__(self, nome, endereco, email, cpf):
@@ -109,12 +111,12 @@ class ViewConsultarCliente(tkinter.Toplevel):
         messagebox.showerror(titulo, msg)
 
 class CtrlCliente():
-    listaClientes = [Cliente("nome", "endereco", "email", "cpf"),]
-    # if not os.path.isfile("jogo.pickle"):
-    #         listaJogo =  []
-    # else:
-    #     with open("jogo.pickle", "rb") as f:
-    #         listaJogo = pickle.load(f)
+    
+    if not os.path.isfile("cliente.pickle"):
+        listaClientes = [Cliente("nome", "endereco", "email", "cpf"),]
+    else:
+        with open("cliente.pickle", "rb") as f:
+            listaCliente = pickle.load(f)
 
 
     def cadastrarCliente(self):
@@ -157,7 +159,7 @@ class CtrlCliente():
         for cliente in self.listaClientes:
             if cliente.cpf == cpf:
                 msg = "Nome: " + cliente.nome + "\n" + "Endereço: " + cliente.endereco
-                msg += "\n" + "Email: " + cliente.email + "\n" + "CPF: " + cliente.cpf
+                msg += "\n" + "Email: " + cliente.email
                 self.viewCliente.mostraSucesso("Cliente encontrado", msg)
                 break
         else:
@@ -166,3 +168,7 @@ class CtrlCliente():
     def botaoCancelarConsulta(self, event):
         self.viewCliente.destroy()
 
+    def salvaCliente(self):
+        if len(self.listaClientes) != 0:
+            with open("cliente.pickle","wb") as f:
+                pickle.dump(self.listaClientes, f)

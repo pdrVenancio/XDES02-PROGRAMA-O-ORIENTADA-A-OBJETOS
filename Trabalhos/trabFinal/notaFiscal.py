@@ -1,15 +1,16 @@
-from sre_constants import CATEGORY_LOC_WORD
+from datetime import  datetime
 import tkinter
 from tkinter import messagebox
-from typing import Text
 import cliente
-from collections import Counter
+import pickle
+import os.path
+
 
 
 class NotaFiscal():
-    def __init__(self, numero, cliente, produtos, dataEmissao, valorTotal):
+    def __init__(self, numero, cpfCliente, produtos, dataEmissao, valorTotal):
         self.__numero = numero 
-        self.__cliente = cliente  
+        self.__cpfCliente = cpfCliente  
         self.__produtos = produtos  
         self.__dataEmissao = dataEmissao 
         self.__valorTotal = valorTotal
@@ -23,12 +24,12 @@ class NotaFiscal():
         self.__numero = valor
 
     @property
-    def cliente(self):
-        return self.__cliente
+    def cpfCliente(self):
+        return self.__cpfCliente
 
-    @cliente.setter
-    def cliente(self, valor):
-        self.__cliente = valor
+    @cpfCliente.setter
+    def cpfCliente(self, valor):
+        self.__cpfCliente = valor
 
     @property
     def produtos(self):
@@ -54,6 +55,13 @@ class NotaFiscal():
     def valorTotal(self, valor):
         self.__valorTotal = valor
 
+    @property
+    def getListaProd(self):
+        msg = ''
+        for produto in self.__produtos:
+            msg += '\n\nProduto: ' + produto[1] + ' - ' + 'Quantidade: ' + str(produto[2])+'Kg' + '\n\n' + 'Valor: ' + 'R$' +str(produto[3])     
+        return msg
+
 
 class ViewEmitirNota(tkinter.Toplevel):
 
@@ -77,7 +85,7 @@ class ViewEmitirNota(tkinter.Toplevel):
         self.buttonCpf.bind("<Button>", controle.buscarCpf)
         self.buttonCancel = tkinter.Button(self.frameButton, text="Cancelar")
         self.buttonCancel.pack(side="left")
-        self.buttonCancel.bind("<Button>", controle.cancelarBusca)
+        self.buttonCancel.bind("<Button>", controle.fecharJanela)
 
     def mostraSucesso(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
@@ -85,13 +93,20 @@ class ViewEmitirNota(tkinter.Toplevel):
     def mostraErro(self, titulo, msg):
         messagebox.showerror(titulo, msg)
 
-    def escolhaProd(self, controle):
-        tkinter.Toplevel.__init__(self)
-        self.geometry("300x300")
-        self.title("Cadsaçl´~as")
+    def escolhaProd(self, controle, coletaNome):
+        self.title("Emitir nota Fiscal")
         self.controle = controle
         self.frameCompra = tkinter.Frame(self)
         self.frameCompra.pack()
+
+        #   Tirar o frame do CPF e dos BOTÕES para inserção dos produtos
+        self.frameCpf.destroy()
+        self.frameButton.destroy()
+
+        # Aparecer o nome do cliente
+        nome_cliente = coletaNome  # Substitua pela função correta
+        self.labelNomeCliente = tkinter.Label(self.frameCompra, text=nome_cliente, fg="Blue")
+        self.labelNomeCliente.pack()
 
         #produto
         self.labelProduto = tkinter.Label(self.frameCompra, text="Produto: ")
@@ -121,6 +136,38 @@ class ViewEmitirNota(tkinter.Toplevel):
         self.buttonGerar.pack(side="left")
         self.buttonGerar.bind("<Button>", controle.gerarNota)
 
+        self.buttonCancel = tkinter.Button(self.frameButton, text="Cancelar")
+        self.buttonCancel.pack(side="left")
+        self.buttonCancel.bind("<Button>", controle.fecharJanela)
+
+class ViewExibirNota(tkinter.Toplevel):
+    def __init__(self, controle):
+        tkinter.Toplevel.__init__(self)
+        self.controle = controle
+        self.geometry("400x200")
+        self.title("Consultar nota")
+
+        self.frameNumNota = tkinter.Frame(self)
+        self.frameNumNota.pack()
+        self.frameButtons = tkinter.Frame(self)
+        self.frameButtons.pack()
+
+        self.labelNum = tkinter.Label(self.frameNumNota, text="Informe o número da nota: ")
+        self.labelNum.pack(side="left")
+        self.inputNum = tkinter.Entry(self.frameNumNota)
+        self.inputNum.pack(side="left")
+        self.buttonConsultar = tkinter.Button(self.frameButtons, text="Consultar")
+        self.buttonConsultar.pack(side="left")
+        self.buttonConsultar.bind("<Button>", controle.botaoExibirNota)
+        self.buttonCancelar = tkinter.Button(self.frameButtons, text="Cancelar")
+        self.buttonCancelar.pack(side="left")
+        self.buttonCancelar.bind("<Button>", controle.botaoCancelarConsulta)
+
+    def mostraSucesso(self, titulo, msg):
+        messagebox.showinfo(titulo, msg)
+
+    def mostraErro(self, titulo, msg):
+        messagebox.showerror(titulo, msg)
 
 class ViewFaturamentoProduto(tkinter.Toplevel):
 
@@ -244,7 +291,7 @@ class ViewRankProdutos(tkinter.Toplevel):
         self.buttonSubmit = tkinter.Button(self.frameButton, text="Consultar Produtos mais vendidos")
         self.buttonSubmit.pack(side="left")
         self.buttonSubmit.bind("<Button>", controle.produtosMaisvendidos)
-  
+
 class CtrlNotaFiscal():
 
     def __init__(self, controleprincipal):
@@ -252,10 +299,19 @@ class CtrlNotaFiscal():
         self.listaProdutos = controleprincipal.ctrlProduto.getListaProduto()  #pega a lista de todos os produtos registrados
         self.cpfCliente = ""
         self.listaCompra = []
-        self.listaNota = []
+        
+        if not os.path.isfile("nota.pickle"):
+            self.listaNota = []
+        else:
+            with open("nota.pickle", "rb") as f:
+                self.listaNota = pickle.load(f)
+
 
     def emitirNota(self):
         self.viewEmitirNota = ViewEmitirNota(self)
+
+    def exibirNota(self):
+        self.viewExibirNota = ViewExibirNota(self)
 
     def buscarCpf(self, event):
         cpf = self.viewEmitirNota.inputCpf.get()
@@ -264,37 +320,50 @@ class CtrlNotaFiscal():
         else:
             for c in cliente.CtrlCliente.listaClientes:
                 if c.cpf == cpf:
-                    self.viewEmitirNota.escolhaProd(self)
+                    self.viewEmitirNota.escolhaProd(self, coletaNome=c.nome)
                     self.cpfCliente = cpf
                     break
             else:
                 self.viewEmitirNota.mostraErro("Erro", "Cliente não encontrado!\nCadastre um cliente antes de prosseguir")
                 return
 
-    def cancelarBusca(self, event):
+    def fecharJanela(self, event):
         self.viewEmitirNota.destroy()
 
     def addProdNota(self, event):
-        produto = self.viewEmitirNota.inputProduto.get()
-        quantidade = float(self.viewEmitirNota.inputQuantidade.get())
-        self.valortt = 0
+        if len(self.listaCompra) >= 10:
+            self.viewEmitirNota.mostraErro("Erro", "Limite máximo de 10 produtos diferentes atingidos")
+            return
+        codigoProd = self.viewEmitirNota.inputProduto.get()
+        quantidade = int(self.viewEmitirNota.inputQuantidade.get())
+        # self.valortt = 0
         preco = 0
         nome = ""
         cod = ""
+
         for prd in self.listaProdutos:
-            if prd.codigo == produto:
+            if prd.codigo == codigoProd:
                 preco = prd.precoPerKg
                 nome = prd.descricao
                 cod = prd.codigo
                 break
         else:
-            self.viewEmitirNota.mostraErro("Erro", "Produto não encontrado")
+            self.viewEmitirNota.mostraErro("Erro", "Produto inexistente")
+            return
 
-        valor = float(quantidade) * float(preco)
-        self.listaCompra.append((cod, nome, quantidade, valor))
-        self.valortt += float(valor)
-        print(self.valortt)
-        msg = f"Produto: {cod}\nDescrição: {nome}\nValor: {valor}"
+        # Função que atualiza produto se já existente na lista de compras
+        for prd in self.listaCompra:
+            if prd[0] == codigoProd:
+                prd[2] += quantidade
+                prd[3] += float(preco) * quantidade
+                self.viewEmitirNota.mostraSucesso("Sucesso", "Produto atualizado com sucesso")
+                return
+
+        valor = quantidade * float(preco)
+        self.listaCompra.append([cod, nome, quantidade, valor])
+        # self.valortt += float(valor)
+        # print(self.valortt)
+        msg = f"Descrição: {nome}\nValor: {valor}"
         self.viewEmitirNota.mostraSucesso("Produto adicionado com sucesso!", msg)
 
     def calculaNumNota(self):
@@ -310,21 +379,46 @@ class CtrlNotaFiscal():
 
     def gerarNota(self, event):
         cpf = ""
+        valortt = 0
         data = self.viewEmitirNota.inputData.get()
         for clt in cliente.CtrlCliente.listaClientes:
             if clt.cpf == self.cpfCliente:
                 cpf = clt.cpf
-        
+
         numero = self.calculaNumNota()
 
-        nota = NotaFiscal(numero, cpf, self.listaCompra, data, self.valortt)
+        for produto in self.listaCompra:
+            valortt += produto[3]
+            print(valortt)
+
+        nota = NotaFiscal(numero, cpf, self.listaCompra, data, valortt)
         self.listaNota.append(nota)
+        self.listaCompra = []
 
         msg = ""
         for nota in self.listaNota:
-            msg += f"Número: {nota.numero}\nCPF: {nota.cliente}\nData: {nota.dataEmissao}\nValor total: {nota.valorTotal}\n"
+            msg = f"Número: {nota.numero}\nCPF: {nota.cpfCliente}\nData: {nota.dataEmissao}\nValor total: {nota.valorTotal}\n"
         self.viewEmitirNota.mostraSucesso("Nota Fiscal gerada com sucesso!",msg)
         self.viewEmitirNota.destroy()
+
+    def botaoExibirNota(self, event):
+        NumInserido = int(self.viewExibirNota.inputNum.get())
+        msg = ""
+
+        for nota in self.listaNota:
+            if nota.numero == NumInserido:
+                msg = f"CPF do cliente: {nota.cpfCliente}\n"\
+                        "Nome do cliente: " + "Passar nome" + "\n\n"\
+                        f"LISTA DE PRODUTOS: {nota.getListaProd}\n"\
+                        "============================\n"\
+                        f"Valor total: {nota.valorTotal}"
+                self.viewExibirNota.mostraSucesso(f"Nota {nota.numero}", msg)
+                break
+        else:
+            self.viewExibirNota.mostraErro("Erro", "Essa nota não existe!!")
+
+    def botaoCancelarConsulta(self, event):
+        self.viewExibirNota.destroy()
 
     def fatProduto(self):
         self.viewFaturamentoProduto = ViewFaturamentoProduto(self)
@@ -343,11 +437,8 @@ class CtrlNotaFiscal():
         vtotalProduto = 0
         for nota in self.listaNota:
             for produto in nota.produtos:
-                
                 if produto[0] == produtoProcurado:
                     vtotalProduto += produto[3]
-                break
-                
 
         msg = f"Faturamento total do produto {produtoProcurado}: {vtotalProduto}"
         self.viewEmitirNota.mostraSucesso("Faturamento",msg)
@@ -356,7 +447,7 @@ class CtrlNotaFiscal():
         clienteProcurado = self.viewFaturamentoCliente.inputCliente.get()
         vtotalCliente = 0
         for nota in self.listaNota:
-            if nota.cliente == clienteProcurado:
+            if nota.cpfCliente == clienteProcurado:
                 vtotalCliente += nota.valorTotal
 
         msg = f"Faturamento total do cliente {clienteProcurado}: {vtotalCliente}"
@@ -365,9 +456,14 @@ class CtrlNotaFiscal():
     def faturamentoPeriodo(self, event):
         data1 = self.viewFaturamentoPeriodo.inputInicio.get()
         data2 = self.viewFaturamentoPeriodo.inputFinal.get()
+
+        d1 = datetime.strptime(data1, '%d/%m/%Y')
+        d2 = datetime.strptime(data2, '%d/%m/%Y')
+
         vtotal = 0
         for nota in self.listaNota:
-            if nota.dataEmissao >= data1 and nota.dataEmissao <= data2:
+            notaData = datetime.strptime(nota.dataEmissao, '%d/%m/%Y')
+            if notaData >= d1 and notaData <= d2:
                 vtotal += nota.valorTotal
 
         msg = f"O faturamento do periodo de {data1} ate {data2} foi de {vtotal}"
@@ -377,10 +473,15 @@ class CtrlNotaFiscal():
         clienteProcurado = self.viewFaturamentoPeriodoCliente.inputCod.get()
         data1 = self.viewFaturamentoPeriodoCliente.inputInicio.get()
         data2 = self.viewFaturamentoPeriodoCliente.inputFinal.get()
+
+        d1 = datetime.strptime(data1, '%d/%m/%Y')
+        d2 = datetime.strptime(data2, '%d/%m/%Y')
+        
         msg = ""
         cont = 0
         for nota in self.listaNota:
-            if nota.dataEmissao >= data1 and nota.dataEmissao <= data2 and nota.cliente == clienteProcurado:
+            notaData = datetime.strptime(nota.dataEmissao, '%d/%m/%Y')
+            if notaData >= d1 and notaData <= d2 and nota.cpfCliente == clienteProcurado:
                 cont +=1
                 msg += f"Valor da nota: {nota.valorTotal}\n"
 
@@ -389,28 +490,28 @@ class CtrlNotaFiscal():
 
     def rankProdutos(self):
         self.viewRankProdutos = ViewRankProdutos(self) 
-#Preciso saber quis sao os 5 produtos mais vendidos
+        
     def produtosMaisVendidos(self):
 # Criar um dicionário para armazenar informações sobre os produtos
         info_produtos = {}
-        
+
         # Iterar sobre todas as notas fiscais
         for nota in self.listaNota:
             for produto in nota.produtos:
                 cod_produto = produto[0]
                 descricao = ""
                 preco_por_kg = 0
-        
+
                 # Procurar as informações do produto na lista de produtos
                 for prd in self.listaProdutos:
                     if prd.codigo == cod_produto:
                         descricao = prd.descricao
                         preco_por_kg = prd.precoPerKg
                         break
-        
+
                 # Calcular o valor total obtido com a venda do produto
                 valor_total = produto[2] * preco_por_kg
-        
+
                 # Atualizar as informações do produto no dicionário
                 if cod_produto not in info_produtos:
                     info_produtos[cod_produto] = {
@@ -422,7 +523,7 @@ class CtrlNotaFiscal():
                 else:
                     info_produtos[cod_produto]["quantidade_vendida"] += produto[2]
                     info_produtos[cod_produto]["valor_total"] += valor_total
-        
+
         # # info_produtos.items(): Transforma o dicionário info_produtos em uma lista de tuplas,
         # onde cada tupla contém um par chave-valor do dicionário. A função items() retorna uma visão de todos os 
         # itens no dicionário, e o sorted posterior ordenará essas tuplas.
@@ -437,12 +538,17 @@ class CtrlNotaFiscal():
         # # [:5]: Realiza uma fatia na lista resultante, pegando apenas os primeiros cinco elementos. 
         # Isso garante que a lista produtos_mais_vendidos contenha apenas as informações dos cinco produtos mais vendidos.
         produtos_mais_vendidos = sorted(info_produtos.items(), key=lambda x: x[1]["quantidade_vendida"], reverse=True)[:5]# Ordenar a lista 
-        
+
 
         msg = "Os 5 produtos mais vendidos:\n\n"
         p = 1
         for cod_produto, info in produtos_mais_vendidos:
-            
+
             msg +=f"{p} posicao: \n Código: {cod_produto},\n Descrição: {info['descricao']}\n Preço por Kg: {info['preco_por_kg']}\n Quantidade Vendida: {info['quantidade_vendida']} kg \n Valor Total: R${info['valor_total']:.2f}\n\n"
             p+=1
         self.viewEmitirNota.mostraSucesso("Rank Produtos", msg)
+
+    def salvaNota(self):
+        if len(self.listaNota) != 0:
+            with open("nota.pickle","wb") as f:
+                pickle.dump(self.listaNota, f)

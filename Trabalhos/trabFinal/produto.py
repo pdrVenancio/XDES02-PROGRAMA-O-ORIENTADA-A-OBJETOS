@@ -1,5 +1,8 @@
 import tkinter
 from tkinter import messagebox
+import pickle
+import os.path
+
 
 
 class Produto():
@@ -157,13 +160,19 @@ class ViewConsultaProduto(tkinter.Toplevel):
             messagebox.showinfo(titulo, msg)
 #controle principal
 class CtrlProduto():
-        def __init__(self, controleprincipal) -> None:
+        def __init__(self, controleprincipal):
+            if not os.path.isfile("produtos.pickle"):
+                self.listaProdutos = [
+                     Produto("1", "Arroz", 1),
+                     Produto("2", "Feijão", 2),
+                     Produto("3", "Batata", 3),
+                     Produto("4", "Carne de frango", 4),
+                     Produto("5", "Maça", 5),]
+            else:
+                with open("produtos.pickle", "rb") as f:
+                    self.listaProdutos = pickle.load(f)
             self.controlePrincipal = controleprincipal
-            self.listaProdutos = [Produto("1", "Arroz", 1),
-                                 Produto("2", "Feijão", 2),
-                                 Produto("3", "Batata", 3),
-                                 Produto("4", "Carne de frango", 4),
-                                 Produto("5", "Maça", 5),]
+            
 
         def getListaProduto(self):
           return self.listaProdutos
@@ -251,4 +260,9 @@ class CtrlProduto():
 
         def returnListaProd(self):
             return self.listaProdutos
+
+        def salvaProduto(self):
+            if len(self.listaProdutos) != 0:
+                with open("Equipe.pickle","wb") as f:
+                    pickle.dump(self.listaProdutos, f)
                 
