@@ -59,7 +59,7 @@ class NotaFiscal():
     def getListaProd(self):
         msg = ''
         for produto in self.__produtos:
-            msg += '\n\nProduto: ' + produto[1] + ' - ' + 'Quantidade: ' + str(produto[2])+'Kg' + '\n\n' + 'Valor: ' + 'R$' +str(produto[3])     
+            msg += '\n\nProduto: ' + produto[1] + ' - ' + 'Quantidade: ' + str(produto[2])+'Kg' + '\n' + 'Valor: ' + 'R$' +str(produto[3])     
         return msg
 
 
@@ -96,6 +96,8 @@ class ViewEmitirNota(tkinter.Toplevel):
     def escolhaProd(self, controle, coletaNome):
         self.title("Emitir nota Fiscal")
         self.controle = controle
+        self.frameNome = tkinter.Frame(self)
+        self.frameNome.pack()
         self.frameCompra = tkinter.Frame(self)
         self.frameCompra.pack()
 
@@ -104,9 +106,18 @@ class ViewEmitirNota(tkinter.Toplevel):
         self.frameButton.destroy()
 
         # Aparecer o nome do cliente
-        nome_cliente = coletaNome  # Substitua pela função correta
-        self.labelNomeCliente = tkinter.Label(self.frameCompra, text=nome_cliente, fg="Blue")
-        self.labelNomeCliente.pack()
+        nomeCliente = coletaNome
+
+        linhaSuperior = tkinter.Label(self.frameNome, text="=-" * 20)
+        linhaSuperior.grid(row=0, column=0, columnspan=3)  # columnspan=3 garante que a linha cobre todas as colunas
+
+        nomeCliente_label = tkinter.Label(self.frameNome, text=nomeCliente, fg="blue")
+        nomeCliente_label.grid(row=1, column=1)
+
+        linhaInferior = tkinter.Label(self.frameNome, text="=-" * 20)
+        linhaInferior.grid(row=2, column=0, columnspan=3)  # columnspan=3 garante que a linha cobre todas as colunas
+
+
 
         #produto
         self.labelProduto = tkinter.Label(self.frameCompra, text="Produto: ")
@@ -296,10 +307,10 @@ class CtrlNotaFiscal():
 
     def __init__(self, controleprincipal):
         self.controlePrincipal = controleprincipal
-        self.listaProdutos = controleprincipal.ctrlProduto.getListaProduto()  #pega a lista de todos os produtos registrados
+        self.listaProdutos = controleprincipal.ctrlProduto.getListaProduto() 
         self.cpfCliente = ""
         self.listaCompra = []
-        
+
         if not os.path.isfile("nota.pickle"):
             self.listaNota = []
         else:
@@ -335,7 +346,7 @@ class CtrlNotaFiscal():
             self.viewEmitirNota.mostraErro("Erro", "Limite máximo de 10 produtos diferentes atingidos")
             return
         codigoProd = self.viewEmitirNota.inputProduto.get()
-        quantidade = int(self.viewEmitirNota.inputQuantidade.get())
+        quantidade = float(self.viewEmitirNota.inputQuantidade.get())
         # self.valortt = 0
         preco = 0
         nome = ""
@@ -385,6 +396,10 @@ class CtrlNotaFiscal():
             if clt.cpf == self.cpfCliente:
                 cpf = clt.cpf
 
+        if len(data) != 10 or data[2] != "/" or data[5] != "/":
+            self.viewEmitirNota.mostraErro("Data inválida", "Data deve seguir o formato xx/xx/xxxx")
+            return
+
         numero = self.calculaNumNota()
 
         for produto in self.listaCompra:
@@ -407,15 +422,34 @@ class CtrlNotaFiscal():
 
         for nota in self.listaNota:
             if nota.numero == NumInserido:
+                # Crie uma janela temporária para exibir a nota
+                janelaTemporaria = tkinter.Toplevel()
+                janelaTemporaria.geometry("365x350")
+                janelaTemporaria.title(f"Nota {nota.numero}")
+                janelaTemporaria.resizable(False, False)
+
+                # Crie um Text widget na janela temporária
+                textbox = tkinter.Text(janelaTemporaria, wrap="word", height=40, width=45)
+                textbox.pack()
+
                 msg = f"CPF do cliente: {nota.cpfCliente}\n"\
-                        "Nome do cliente: " + "Passar nome" + "\n\n"\
-                        f"LISTA DE PRODUTOS: {nota.getListaProd}\n"\
-                        "============================\n"\
-                        f"Valor total: {nota.valorTotal}"
-                self.viewExibirNota.mostraSucesso(f"Nota {nota.numero}", msg)
+                    f"Nome do cliente: {cliente.CtrlCliente.getNome(nota.cpfCliente)}\n\n"\
+                    + ("=" * 45) + "\n"\
+                    f"LISTA DE PRODUTOS: {nota.getListaProd}\n"\
+                    + ("=" * 45) + "\n"\
+                    f"Valor total: R${nota.valorTotal}"
+
+                textbox.insert("end", msg)
+
+                scrollbar = tkinter.Scrollbar(janelaTemporaria, command=textbox.yview)
+                scrollbar.pack(side="right", fill="y")
+
+                textbox.config(yscrollcommand=scrollbar.set)
+
                 break
         else:
             self.viewExibirNota.mostraErro("Erro", "Essa nota não existe!!")
+
 
     def botaoCancelarConsulta(self, event):
         self.viewExibirNota.destroy()
@@ -432,7 +466,18 @@ class CtrlNotaFiscal():
     def fatPeriodoCliente(self):
         self.viewFaturamentoPeriodoCliente = ViewFaturamentoPeriodoCliente(self)
 
+    #Essa função só cria o view para que os faturamentos possam ser aplicados diretamente ao abrir o programa
+    def criaView_Auxiliar(self):
+        self.viewEmitirNota = ViewEmitirNota(self)
+        self.viewEmitirNota.destroy()
+
+    def validaData(self, data1, data2):
+        if (len(data1) != 10 or (data1[2] != "/" or data1[5] != "/")) or (len(data2) != 10 or (data2[2] != "/" or data2[5] != "/")):
+            self.viewEmitirNota.mostraErro("Datas inválidas", "As datas devem ser no formato xx/xx/xxxx")
+            return 0
+
     def faturamentoProduto(self, event):
+        self.criaView_Auxiliar()
         produtoProcurado = self.viewFaturamentoProduto.inputProduto.get()
         vtotalProduto = 0
         for nota in self.listaNota:
@@ -444,6 +489,7 @@ class CtrlNotaFiscal():
         self.viewEmitirNota.mostraSucesso("Faturamento",msg)
 
     def faturamentoCliente(self, event):
+        self.criaView_Auxiliar()
         clienteProcurado = self.viewFaturamentoCliente.inputCliente.get()
         vtotalCliente = 0
         for nota in self.listaNota:
@@ -454,11 +500,18 @@ class CtrlNotaFiscal():
         self.viewEmitirNota.mostraSucesso("Faturamento",msg)
 
     def faturamentoPeriodo(self, event):
+        self.criaView_Auxiliar()
         data1 = self.viewFaturamentoPeriodo.inputInicio.get()
         data2 = self.viewFaturamentoPeriodo.inputFinal.get()
 
-        d1 = datetime.strptime(data1, '%d/%m/%Y')
-        d2 = datetime.strptime(data2, '%d/%m/%Y')
+        if self.validaData(data1, data2) == 0:
+            return
+
+        try:
+            d1 = datetime.strptime(data1, '%d/%m/%Y')
+            d2 = datetime.strptime(data2, '%d/%m/%Y')
+        except ValueError as error:
+            self.viewEmitirNota.mostraErro(error, "As datas são inválidas")
 
         vtotal = 0
         for nota in self.listaNota:
@@ -470,13 +523,21 @@ class CtrlNotaFiscal():
         self.viewEmitirNota.mostraSucesso("Faturamento",msg)
 
     def faturamentoPeriodoCliente(self, event):
+        self.criaView_Auxiliar()
         clienteProcurado = self.viewFaturamentoPeriodoCliente.inputCod.get()
         data1 = self.viewFaturamentoPeriodoCliente.inputInicio.get()
         data2 = self.viewFaturamentoPeriodoCliente.inputFinal.get()
 
-        d1 = datetime.strptime(data1, '%d/%m/%Y')
-        d2 = datetime.strptime(data2, '%d/%m/%Y')
-        
+        if self.validaData(data1, data2) == 0:
+            return
+
+        try:
+            d1 = datetime.strptime(data1, '%d/%m/%Y')
+            d2 = datetime.strptime(data2, '%d/%m/%Y')
+        except ValueError as error:
+            self.viewEmitirNota.mostraErro(error, "As datas devem ser no formato xx/xx/xxxx e devem ser numéricas")
+
+
         msg = ""
         cont = 0
         for nota in self.listaNota:
@@ -490,8 +551,9 @@ class CtrlNotaFiscal():
 
     def rankProdutos(self):
         self.viewRankProdutos = ViewRankProdutos(self) 
-        
+
     def produtosMaisVendidos(self):
+        self.criaView_Auxiliar()
 # Criar um dicionário para armazenar informações sobre os produtos
         info_produtos = {}
 
@@ -552,3 +614,30 @@ class CtrlNotaFiscal():
         if len(self.listaNota) != 0:
             with open("nota.pickle","wb") as f:
                 pickle.dump(self.listaNota, f)
+
+    def exibirNotasEmitidas(self):
+        janelaTemporaria = tkinter.Toplevel()
+        janelaTemporaria.geometry("365x500")
+        janelaTemporaria.title("Notas Emitidas")
+        janelaTemporaria.resizable(False, False)
+
+        # Criar um Text widget na janela temporária
+        textbox = tkinter.Text(janelaTemporaria, wrap="word", height=40, width=45)
+        textbox.pack()
+
+        msg = f"\tNúmero de notas emitidas: {len(self.listaNota)}\n\n\n"
+        msg += ("=" * 45) + "\n\n"
+        for nota in self.listaNota:
+            msg += f"NOTA {nota.numero}\n"
+            msg += f"Cliente: {cliente.CtrlCliente.getNome(nota.cpfCliente)} \n"
+            msg += nota.getListaProd + "\n\n"
+            msg += f"Data de Emissao: {nota.dataEmissao} \n"
+            msg += f"Valor total: R${nota.valorTotal} \n\n"
+            msg += ("=" * 45) + "\n\n\n"
+
+        textbox.insert("end", msg)
+
+        scrollbar = tkinter.Scrollbar(janelaTemporaria, command=textbox.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        textbox.config(yscrollcommand=scrollbar.set)

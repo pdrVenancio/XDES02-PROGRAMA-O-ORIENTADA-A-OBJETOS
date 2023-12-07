@@ -85,7 +85,7 @@ class ViewConsultarCliente(tkinter.Toplevel):
     def __init__(self, controle):
         tkinter.Toplevel.__init__(self)
         self.controle = controle
-        self.geometry("400x200")
+        self.geometry("350x150")
         self.title("Consultar cliente")
 
         self.frameCpf = tkinter.Frame(self)
@@ -111,12 +111,13 @@ class ViewConsultarCliente(tkinter.Toplevel):
         messagebox.showerror(titulo, msg)
 
 class CtrlCliente():
-    
+
     if not os.path.isfile("cliente.pickle"):
-        listaClientes = [Cliente("nome", "endereco", "email", "cpf"),]
+        listaClientes = [Cliente("Breno Vieira Nogueira Carneiro", "Paraisópolis MG", "breno@gmail.com", "11111111111"),
+                         Cliente("Pedro Venâncio dos Santos", "Paraisópolis MG", "pedro@gmail.com", "22222222222")]
     else:
         with open("cliente.pickle", "rb") as f:
-            listaCliente = pickle.load(f)
+            listaClientes = pickle.load(f)
 
 
     def cadastrarCliente(self):
@@ -134,9 +135,19 @@ class CtrlCliente():
         if len(nome) == 0 or len(endereco) == 0 or len(email) == 0 or len(cpf) == 0:
             self.viewCliente.mostraErro("Erro", "Preencha todos os campos!")
             return
-        
+
+        #CPF deve ter onze digitos e deve ser numérico
+        if len(cpf) != 11 or not cpf.isdigit():
+            self.viewCliente.mostraErro("CPF Inválido", "CPF deve conter 11 digitos numéricos")
+            return
+
+        if email.find("@") == -1 or email.find(".") == -1:
+            self.viewCliente.mostraErro("Email Inválido", 'Email deve conter os seguintes símbolos: "@" e "."')
+            return
+
         cliente = Cliente(nome, endereco, email, cpf)
         self.listaClientes.append(cliente)
+        self.viewCliente.mostraSucesso("Sucesso", "Cliente Cadastrado!")
         self.viewCliente.destroy()
 
     def botaoCancelarCliente(self, event):
@@ -155,7 +166,7 @@ class CtrlCliente():
         if len(cpf) == 0:
             self.viewCliente.mostraErro("Erro", "Preencha o campo CPF!")
             return
-        
+
         for cliente in self.listaClientes:
             if cliente.cpf == cpf:
                 msg = "Nome: " + cliente.nome + "\n" + "Endereço: " + cliente.endereco
@@ -172,3 +183,22 @@ class CtrlCliente():
         if len(self.listaClientes) != 0:
             with open("cliente.pickle","wb") as f:
                 pickle.dump(self.listaClientes, f)
+
+    def mostraClientesCadastrados(self):
+        self.viewCliente = ViewCadastraCliente(self)
+        self.viewCliente.destroy()
+        msg = "========================================================\n"
+        msg = f"Número de clientes cadastrados: {len(self.listaClientes)}\n\n\n"
+        num = 1 
+        for cliente in self.listaClientes:
+            msg += f"CLIENTE NÚMERO {num}\n"
+            msg += "Nome: " + cliente.nome + "\n" + "Endereço: " + cliente.endereco
+            msg += "\n" + "Email: " + cliente.email +  "\n" + "CPF: " + cliente.cpf + "\n\n"
+            num += 1
+
+        self.viewCliente.mostraSucesso("Lista de clientes cadastrados", msg)
+
+    def getNome(cpfCliente):
+        for clt in CtrlCliente.listaClientes:
+            if clt.cpf == cpfCliente:
+                return clt.nome
