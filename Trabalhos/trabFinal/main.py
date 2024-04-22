@@ -1,9 +1,6 @@
 # TRABALHO FINAL - sistema para gerenciamento de vendas de um açougue
 
 # ==============================
-# Breno Vieira Nogueira Carneiro
-# Matrícula: 2023003929
-#
 # Pedro Venâncio dos Santos
 # Matrícula: 2023010066
 # ==============================
